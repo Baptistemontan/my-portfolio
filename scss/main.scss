@@ -1,4 +1,5 @@
 @import "config";
+@import "menu";
 
 * {
     box-sizing: border-box;
@@ -52,7 +53,7 @@ main {
             padding: 0.4rem;
             &:hover {
                 color: $secondary-color;
-                @include easeOut();
+                @include easeOut;
             }
         }
     }
