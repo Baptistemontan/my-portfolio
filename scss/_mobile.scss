@@ -25,17 +25,16 @@
         float: none;
         width: 100%;
         min-height: 0;
-        // &.show {
-        //     transform: translate3d(0,0,0);
-        // }
     }
     .menu-nav {
         height: 75vh;
+        //sliding from the right
         transform: translate3d(100%,0,0);
         font-size: 24px;
     }
     .menu-branding {
         height: 25vh;
+        //sliding from the left
         transform: translate3d(-100%,0,0);
         .portrait {
             background: $portrait-image-small;

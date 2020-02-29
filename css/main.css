@@ -14,11 +14,11 @@
   .menu-btn.close {
     transform: rotate(180deg); }
     .menu-btn.close .btn-line:nth-child(1) {
-      transform: rotate(45deg) translate(5px, 5px); }
+      transform: translate(0px, 8px) rotate(-45deg); }
+    .menu-btn.close .btn-line:nth-child(3) {
+      transform: translate(0px, -8px) rotate(45deg); }
     .menu-btn.close .btn-line:nth-child(2) {
       opacity: 0; }
-    .menu-btn.close .btn-line:nth-child(3) {
-      transform: rotate(135deg) translate(6.5px, -6.5px); }
 
 .menu {
   position: fixed;
