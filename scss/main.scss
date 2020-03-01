@@ -83,6 +83,13 @@ main {
     "bioimage bio bio"
     "job1 job2 job3";
   grid-template-columns: repeat(3, 1fr);
+  a {
+    border-bottom: solid 2px;
+    &:hover {
+      @include easeOut;
+      color: $secondary-color;
+    }
+  }
   .bio-image {
     grid-area: bioimage;
     margin: auto;

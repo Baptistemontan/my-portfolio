@@ -6,7 +6,7 @@
   "homepage": "https://baptistemontan.github.io/my-potfolio",
   "scripts": {
     "sass": "node-sass -w scss/ -o dist/css/ --recursive",
-    "deploy": "gh-âges -d dist"
+    "deploy": "gh-pages -d dist"
   },
   "author": "Baptiste de Montangon",
   "license": "ISC",
