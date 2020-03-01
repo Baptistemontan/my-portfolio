@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "description": "portfolio",
   "main": "index.js",
+  "homepage": "https://baptistemontan.github.io/my-potfolio",
   "scripts": {
-    "sass": "node-sass -w scss/ -o css/ --recursive"
+    "sass": "node-sass -w scss/ -o dist/css/ --recursive",
+    "deploy": "gh-âges -d dist"
   },
   "author": "Baptiste de Montangon",
   "license": "ISC",
   "dependencies": {
+    "gh-pages": "^2.2.0",
     "node-sass": "^4.13.1"
   }
 }
