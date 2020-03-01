@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "portfolio",
   "main": "index.js",
-  "homepage": "https://baptistemontan.github.io/my-potfolio",
+  "homepage": "https://baptistemontan.github.io/my-portfolio",
   "scripts": {
     "sass": "node-sass -w scss/ -o dist/css/ --recursive",
     "deploy": "gh-pages -d dist"
