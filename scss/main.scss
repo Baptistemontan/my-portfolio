@@ -1,120 +1,121 @@
 @import "config";
 @import "menu";
 
-
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    @include background;
-    background: $primary-color;
-    color: set-text-color($primary-color);
-    height: 100%;
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.5;
+  @include background;
+  background: $primary-color;
+  color: set-text-color($primary-color);
+  height: 100%;
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.5;
 }
 
 // Headings
-h1,h2,h3 {
-    margin: 0;
-    font-weight: 400;
-    &.lg-heading {
-        font-size: 6rem;
-    }
-    &.sm-heading {
-        margin-bottom: 2rem;
-        padding: 0.2rem 1rem;
-        background: rgba(lighten($primary-color, 2),0.5);
-    }
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 400;
+  &.lg-heading {
+    font-size: 6rem;
+  }
+  &.sm-heading {
+    margin-bottom: 2rem;
+    padding: 0.2rem 1rem;
+    background: rgba(lighten($primary-color, 2), 0.5);
+  }
+}
+
+.portrait {
+  width: 250px;
+  height: 250px;
+  background: $portrait-image;
+  border-radius: 50%;
+  border: solid 3px $secondary-color;
 }
 
 a {
-    color: #fff;
-    text-decoration: none;
+  color: #fff;
+  text-decoration: none;
 }
 
 header {
-    position: fixed;
-    z-index: 2;
-    width: 100%;
+  position: fixed;
+  z-index: 2;
+  width: 100%;
 }
 
 .text-secondary {
-    color: $secondary-color;
+  color: $secondary-color;
 }
 
 main {
-    padding: 4rem;
-    // height: 100%;
-    min-height: calc(100vh-60px);
-    .icons {
-        margin-top: 1rem;
-        a {
-            color: set-text-color($primary-color);              
-            padding: 0.4rem;
-            &:hover {
-                color: $secondary-color;
-                @include easeOut;
-            }
-        }
+  padding: 4rem;
+  // height: 100%;
+  min-height: calc(100vh-60px);
+  .icons {
+    margin-top: 1rem;
+    a {
+      color: set-text-color($primary-color);
+      padding: 0.4rem;
+      &:hover {
+        color: $secondary-color;
+        @include easeOut;
+      }
     }
-    &#home {
-        overflow: hidden;
-        h1 {
-            margin-top: 20vh;
-        }
+  }
+  &#home {
+    overflow: hidden;
+    h1 {
+      margin-top: 20vh;
     }
+  }
 }
 
 .about-info {
-    display: grid;
-    grid-gap: 30px;
-    grid-template-areas: 
-    'bioimage bio bio'
-    'job1 job2 job3';
-    grid-template-columns: repeat(3,1fr);
-    .bio-image {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-areas:
+    "bioimage bio bio"
+    "job1 job2 job3";
+  grid-template-columns: repeat(3, 1fr);
+  .bio-image {
     grid-area: bioimage;
     margin: auto;
-    border-radius: 50%;
-    border: $secondary-color 3px solid;
-    }
+  }
 
-    .bio {
-        grid-area: bio;
-        font-size: 1.5rem;
-    }
+  .bio {
+    grid-area: bio;
+    font-size: 1.5rem;
+  }
 
-    .job-1 {
-        grid-area: job1;
-    }
-    .job-2 {
-        grid-area: job2;
-    }
-    .job-3 {
-        grid-area: job3;
-    }
-    .job {
-        background: lighten($primary-color, 5);
-        padding: 0.5rem;
-        border-bottom: $secondary-color 5px solid;
-    }
+  .job-1 {
+    grid-area: job1;
+  }
+  .job-2 {
+    grid-area: job2;
+  }
+  .job-3 {
+    grid-area: job3;
+  }
+  .job {
+    background: lighten($primary-color, 5);
+    padding: 0.5rem;
+    border-bottom: $secondary-color 5px solid;
+  }
 }
 
 #main-footer {
-    text-align: center;
-    padding: 1rem;
-    background: darken($primary-color, 10);
-    color: set-text-color($primary-color);
-    height: 60px;
+  text-align: center;
+  padding: 1rem;
+  background: darken($primary-color, 10);
+  color: set-text-color($primary-color);
+  height: 60px;
 }
-
-
-
-
-
-
 
 @import "mobile";
