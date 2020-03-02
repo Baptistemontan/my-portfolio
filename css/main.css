@@ -84,6 +84,105 @@
 .nav-item:nth-child(4) {
   transition-delay: 0.4s; }
 
+#minesweeper-container {
+  width: 100%;
+  margin-bottom: 2rem; }
+  #minesweeper-container .lg-heading {
+    margin: 4rem; }
+
+#minesweeper {
+  display: grid;
+  width: 700px;
+  font-size: 1rem;
+  margin: auto;
+  grid-template-areas: "board infos" "board buttons";
+  grid-template-columns: 8fr 2fr; }
+  #minesweeper #board {
+    grid-area: board;
+    display: grid;
+    margin-right: 0;
+    margin-left: 0;
+    font-weight: bold;
+    cursor: pointer; }
+    #minesweeper #board .cell {
+      border: solid thin #373737;
+      margin: 2%;
+      border-radius: 10%;
+      padding-bottom: 100%;
+      position: relative;
+      background-color: #c4c4c4;
+      background-size: 60%;
+      background-repeat: no-repeat;
+      background-position: center;
+      color: #eece1a;
+      /* svg files come from fontawesome.com */ }
+      #minesweeper #board .cell.hidden {
+        border: solid thin #c4c4c4;
+        background-color: #373737; }
+        #minesweeper #board .cell.hidden:hover {
+          box-shadow: 1px 1px 5px black;
+          background-color: #eece1a; }
+      #minesweeper #board .cell div {
+        position: absolute;
+        width: 100%;
+        margin: 0;
+        top: 50%;
+        font-size: 1rem;
+        transform: translate(0, -50%);
+        text-align: center; }
+      #minesweeper #board .cell.lose {
+        background-color: tomato; }
+      #minesweeper #board .cell.good {
+        background-color: #2ecc71; }
+      #minesweeper #board .cell.bomb {
+        background-image: url("../images/minesweeper/bomb.svg"); }
+      #minesweeper #board .cell.flag {
+        background-image: url("../images/minesweeper/flag.svg"); }
+      #minesweeper #board .cell.questionMark {
+        background-image: url("../images/minesweeper/question.svg"); }
+      #minesweeper #board .cell .n1 {
+        color: #1e3799; }
+      #minesweeper #board .cell .n2 {
+        color: #27ae60; }
+      #minesweeper #board .cell .n3 {
+        color: #c0392b; }
+      #minesweeper #board .cell .n4 {
+        color: #0c2461; }
+      #minesweeper #board .cell .n5 {
+        color: #cd6133; }
+  #minesweeper .button {
+    border: solid;
+    border-width: thin;
+    margin-top: 5%;
+    margin-left: 5%;
+    text-align: center;
+    cursor: pointer;
+    border: solid thin #c4c4c4;
+    color: #fff;
+    background-color: #373737;
+    border-radius: 5px;
+    transition: all 0.5s ease-out; }
+    #minesweeper .button:hover {
+      color: #000;
+      box-shadow: 1px 1px 5px black;
+      background: #eece1a; }
+  #minesweeper #infos {
+    grid-area: infos; }
+  #minesweeper .infos {
+    justify-content: space-evenly;
+    align-items: center;
+    display: flex; }
+  #minesweeper #buttons {
+    position: relative;
+    grid-area: buttons;
+    height: 100%; }
+  #minesweeper #buttons2 {
+    display: none; }
+  #minesweeper .button-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%; }
+
 * {
   box-sizing: border-box; }
 
@@ -243,6 +342,20 @@ main {
   color: #fff;
   height: 60px; }
 
+.noselect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently                             supported by Chrome, Opera and Firefox */ }
+
 @media screen and (min-width: 1171px) {
   .projects {
     grid-template-columns: repeat(4, 1fr); } }
@@ -277,10 +390,37 @@ main {
     grid-template-areas: "bioimage" "bio" "job1" "job2" "job3";
     grid-template-columns: 1fr; }
   .projects {
-    grid-template-columns: repeat(2, 1fr); } }
+    grid-template-columns: repeat(2, 1fr); }
+  #minesweeper-container {
+    width: 100%; }
+  #minesweeper {
+    width: 90%;
+    grid-template-areas: "infos" "board" "buttons";
+    grid-template-columns: 1fr; }
+    #minesweeper #infos {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly; }
+      #minesweeper #infos .infos p {
+        margin-left: 1rem; }
+    #minesweeper .button-container {
+      margin-top: 2rem;
+      position: relative; }
+      #minesweeper .button-container .button {
+        margin: 0.5rem 0; } }
 
 @media screen and (max-width: 500px) {
   main#home h1 {
     margin-top: 10vh; }
   .projects {
-    grid-template-columns: 1fr; } }
+    grid-template-columns: 1fr; }
+  #minesweeper-container {
+    width: 100%;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0; }
+    #minesweeper-container .lg-heading {
+      margin: 1rem 0; }
+  #minesweeper {
+    margin-top: 4rem;
+    width: 95%; } }
