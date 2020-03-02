@@ -94,8 +94,6 @@ $secondary-cell-color: darken($primary-color, 5);
     }
   }
   .button {
-    border: solid;
-    border-width: thin;
     margin-top: 5%;
     margin-left: 5%;
     text-align: center;
@@ -113,6 +111,23 @@ $secondary-cell-color: darken($primary-color, 5);
   }
   #infos {
     grid-area: infos;
+    #flag-toggle {
+      display: none;
+      align-items: center;
+      padding: 2%;
+      margin: 5%;
+      cursor: pointer;
+      border: solid thin $primary-cell-color;
+      color: set-text-color($secondary-cell-color);
+      background-color: $secondary-cell-color;
+      border-radius: 5px;
+      @include easeOut;
+      &.active {
+        color: set-text-color($secondary-color);
+        box-shadow: 1px 1px 5px black;
+        background: $secondary-color;
+      }
+    }
   }
   .infos {
     justify-content: space-evenly;

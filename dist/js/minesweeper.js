@@ -1,5 +1,5 @@
 (function () {
-    let difficulty = [{ scl: 10, ratio: 0.1 }, { scl: 15, ratio: 0.15 }, { scl: 25, ratio: 0.2 }, { scl: 35, ratio: 0.2 }], Board;
+    let difficulty = [{ scl: 10, ratio: 0.1 }, { scl: 15, ratio: 0.15 }, { scl: 25, ratio: 0.2 }, { scl: 35, ratio: 0.2 }], Board, flagToggle = false;
 
     function BoardObject(scl, ratio) {
         this.scl = scl;
@@ -121,6 +121,14 @@
             }
         }
         $("#minesweeper .cell").click(function (e) {
+            if (flagToggle) {
+                addFlag(e);
+            } else {
+                clickCell(e);
+            }
+
+        }).contextmenu(addFlag);
+        function clickCell(e) {
             if (!Board.started) {
                 Board.paused = false;
                 Board.started = true;
@@ -136,13 +144,14 @@
                 }
                 if (Board.click(parseInt(x), parseInt(y))) {
                     GameOver(false);
-                    $(this).addClass("lose");
+                    $('#' + e.currentTarget.getAttribute('id')).addClass("lose");
                 }
                 Board.show();
             }
-        }).contextmenu(function () {
+        }
+        function addFlag(e) {
             if (!Board.paused) {
-                let cell = $(this);
+                let cell = $('#' + e.currentTarget.getAttribute('id'));
                 if (cell.hasClass("hidden")) {
                     if (cell.hasClass("flag")) {
                         cell.removeClass("flag");
@@ -157,7 +166,7 @@
                 }
                 Board.refreshFlags();
             }
-        });
+        }
         Board.refreshFlags();
     }
 
@@ -222,6 +231,15 @@
         $("#minesweeper #back").click(() => {
             $("#minesweeper #buttons2").css("display", "none");
             $("#minesweeper #buttons1").css("display", "block");
+        });
+        $('#minesweeper #flag-toggle').click(function () {
+            if (flagToggle) {
+                flagToggle = false;
+                $(this).removeClass('active');
+            } else {
+                flagToggle = true;
+                $(this).addClass('active');
+            }
         });
     });
 })()

@@ -151,8 +151,6 @@
       #minesweeper #board .cell .n5 {
         color: #cd6133; }
   #minesweeper .button {
-    border: solid;
-    border-width: thin;
     margin-top: 5%;
     margin-left: 5%;
     text-align: center;
@@ -168,6 +166,21 @@
       background: #eece1a; }
   #minesweeper #infos {
     grid-area: infos; }
+    #minesweeper #infos #flag-toggle {
+      display: none;
+      align-items: center;
+      padding: 2%;
+      margin: 5%;
+      cursor: pointer;
+      border: solid thin #c4c4c4;
+      color: #fff;
+      background-color: #373737;
+      border-radius: 5px;
+      transition: all 0.5s ease-out; }
+      #minesweeper #infos #flag-toggle.active {
+        color: #000;
+        box-shadow: 1px 1px 5px black;
+        background: #eece1a; }
   #minesweeper .infos {
     justify-content: space-evenly;
     align-items: center;
@@ -360,7 +373,7 @@ main {
   .projects {
     grid-template-columns: repeat(4, 1fr); } }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 800px) {
   main {
     align-items: center;
     text-align: center; }
@@ -403,6 +416,8 @@ main {
       justify-content: space-evenly; }
       #minesweeper #infos .infos p {
         margin-left: 1rem; }
+      #minesweeper #infos #flag-toggle {
+        display: flex; }
     #minesweeper .button-container {
       margin-top: 2rem;
       position: relative; }
@@ -412,7 +427,7 @@ main {
 @media screen and (max-width: 500px) {
   main#home h1 {
     margin-top: 10vh; }
-  main .lg-heading {
+  .lg-heading {
     font-size: 3rem; }
   .projects {
     grid-template-columns: 1fr; }
