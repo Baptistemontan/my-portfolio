@@ -96,7 +96,7 @@
         Board.gameover = false;
         toggleTimer(false);
         toggleTimer();
-        $("#minesweeper #time").css("color", "");
+        $("#minesweeper #time > p").css("color", "");
         let i, j, text = '';
         for (i = 0; i < scl; i++) {
             for (j = 0; j < scl; j++) {

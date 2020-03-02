@@ -55,8 +55,33 @@
   .projects {
     grid-template-columns: repeat(2, 1fr);
   }
+  #minesweeper-container {
+    width: 100%;
+  }
   #minesweeper {
     width: 90%;
+    grid-template-areas:
+      "infos"
+      "board"
+      "buttons";
+    grid-template-columns: 1fr;
+    #infos {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      .infos {
+        p {
+          margin-left: 1rem;
+        }
+      }
+    }
+    .button-container {
+      margin-top: 2rem;
+      position: relative;
+      .button {
+        margin: 0.5rem 0;
+      }
+    }
   }
 }
 // smartphones
@@ -67,7 +92,17 @@
   .projects {
     grid-template-columns: 1fr;
   }
+  #minesweeper-container {
+    width: 100%;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    .lg-heading {
+      margin: 1rem 0;
+    }
+  }
   #minesweeper {
+    margin-top: 4rem;
     width: 95%;
   }
 }

@@ -86,17 +86,19 @@
 
 #minesweeper-container {
   width: 100%;
-  margin-bottom: 4rem; }
+  margin-bottom: 2rem; }
   #minesweeper-container .lg-heading {
     margin: 4rem; }
 
 #minesweeper {
-  display: flex;
+  display: grid;
   width: 700px;
+  font-size: 1rem;
   margin: auto;
-  position: relative; }
+  grid-template-areas: "board infos" "board buttons";
+  grid-template-columns: 8fr 2fr; }
   #minesweeper #board {
-    width: 800px;
+    grid-area: board;
     display: grid;
     margin-right: 0;
     margin-left: 0;
@@ -148,36 +150,38 @@
         color: #0c2461; }
       #minesweeper #board .cell .n5 {
         color: #cd6133; }
-  #minesweeper #options {
-    width: 20%;
-    font-size: 1rem;
-    position: relative; }
-    #minesweeper #options .button {
-      border: solid;
-      border-width: thin;
-      margin-top: 5%;
-      margin-left: 5%;
-      text-align: center;
-      cursor: pointer;
-      border: solid thin #c4c4c4;
-      color: #fff;
-      background-color: #373737;
-      border-radius: 5px;
-      transition: all 0.5s ease-out; }
-      #minesweeper #options .button:hover {
-        color: #000;
-        box-shadow: 1px 1px 5px black;
-        background: #eece1a; }
-    #minesweeper #options .infos {
-      justify-content: space-evenly;
-      align-items: center;
-      display: flex; }
-    #minesweeper #options #buttons {
-      bottom: 0;
-      position: absolute;
-      width: 100%; }
-    #minesweeper #options #buttons2 {
-      display: none; }
+  #minesweeper .button {
+    border: solid;
+    border-width: thin;
+    margin-top: 5%;
+    margin-left: 5%;
+    text-align: center;
+    cursor: pointer;
+    border: solid thin #c4c4c4;
+    color: #fff;
+    background-color: #373737;
+    border-radius: 5px;
+    transition: all 0.5s ease-out; }
+    #minesweeper .button:hover {
+      color: #000;
+      box-shadow: 1px 1px 5px black;
+      background: #eece1a; }
+  #minesweeper #infos {
+    grid-area: infos; }
+  #minesweeper .infos {
+    justify-content: space-evenly;
+    align-items: center;
+    display: flex; }
+  #minesweeper #buttons {
+    position: relative;
+    grid-area: buttons;
+    height: 100%; }
+  #minesweeper #buttons2 {
+    display: none; }
+  #minesweeper .button-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%; }
 
 * {
   box-sizing: border-box; }
@@ -387,13 +391,36 @@ main {
     grid-template-columns: 1fr; }
   .projects {
     grid-template-columns: repeat(2, 1fr); }
+  #minesweeper-container {
+    width: 100%; }
   #minesweeper {
-    width: 90%; } }
+    width: 90%;
+    grid-template-areas: "infos" "board" "buttons";
+    grid-template-columns: 1fr; }
+    #minesweeper #infos {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly; }
+      #minesweeper #infos .infos p {
+        margin-left: 1rem; }
+    #minesweeper .button-container {
+      margin-top: 2rem;
+      position: relative; }
+      #minesweeper .button-container .button {
+        margin: 0.5rem 0; } }
 
 @media screen and (max-width: 500px) {
   main#home h1 {
     margin-top: 10vh; }
   .projects {
     grid-template-columns: 1fr; }
+  #minesweeper-container {
+    width: 100%;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0; }
+    #minesweeper-container .lg-heading {
+      margin: 1rem 0; }
   #minesweeper {
+    margin-top: 4rem;
     width: 95%; } }

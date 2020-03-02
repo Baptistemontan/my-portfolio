@@ -1,21 +1,24 @@
 $primary-cell-color: lighten($primary-color, 50);
 $secondary-cell-color: darken($primary-color, 5);
 #minesweeper-container {
-  // padding: 0;
   width: 100%;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
   .lg-heading {
     margin: 4rem;
   }
 }
 
 #minesweeper {
-  display: flex;
+  display: grid;
   width: 700px;
+  font-size: 1rem;
   margin: auto;
-  position: relative;
+  grid-template-areas:
+    "board infos"
+    "board buttons";
+  grid-template-columns: 8fr 2fr;
   #board {
-    width: 800px;
+    grid-area: board;
     display: grid;
     margin-right: 0;
     margin-left: 0;
@@ -90,41 +93,44 @@ $secondary-cell-color: darken($primary-color, 5);
       }
     }
   }
-  #options {
-    width: 20%;
-    font-size: 1rem;
-    position: relative;
-    .button {
-      border: solid;
-      border-width: thin;
-      margin-top: 5%;
-      margin-left: 5%;
-      text-align: center;
-      cursor: pointer;
-      border: solid thin $primary-cell-color;
-      color: set-text-color($secondary-cell-color);
-      background-color: $secondary-cell-color;
-      border-radius: 5px;
-      @include easeOut;
-      &:hover {
-        color: set-text-color($secondary-color);
-        box-shadow: 1px 1px 5px black;
-        background: $secondary-color;
-      }
+  .button {
+    border: solid;
+    border-width: thin;
+    margin-top: 5%;
+    margin-left: 5%;
+    text-align: center;
+    cursor: pointer;
+    border: solid thin $primary-cell-color;
+    color: set-text-color($secondary-cell-color);
+    background-color: $secondary-cell-color;
+    border-radius: 5px;
+    @include easeOut;
+    &:hover {
+      color: set-text-color($secondary-color);
+      box-shadow: 1px 1px 5px black;
+      background: $secondary-color;
     }
-    .infos {
-      justify-content: space-evenly;
-      align-items: center;
-      display: flex;
-    }
+  }
+  #infos {
+    grid-area: infos;
+  }
+  .infos {
+    justify-content: space-evenly;
+    align-items: center;
+    display: flex;
+  }
 
-    #buttons {
-      bottom: 0;
-      position: absolute;
-      width: 100%;
-    }
-    #buttons2 {
-      display: none;
-    }
+  #buttons {
+    position: relative;
+    grid-area: buttons;
+    height: 100%;
+  }
+  #buttons2 {
+    display: none;
+  }
+  .button-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
   }
 }
