@@ -1,0 +1,130 @@
+$primary-cell-color: lighten($primary-color, 50);
+$secondary-cell-color: darken($primary-color, 5);
+#minesweeper-container {
+  // padding: 0;
+  width: 100%;
+  margin-bottom: 4rem;
+  .lg-heading {
+    margin: 4rem;
+  }
+}
+
+#minesweeper {
+  display: flex;
+  width: 700px;
+  margin: auto;
+  position: relative;
+  #board {
+    width: 800px;
+    display: grid;
+    margin-right: 0;
+    margin-left: 0;
+    font-weight: bold;
+    cursor: pointer;
+    .cell {
+      border: solid thin $secondary-cell-color;
+      margin: 2%;
+      border-radius: 10%;
+      padding-bottom: 100%;
+      position: relative;
+      background-color: $primary-cell-color;
+      background-size: 60%;
+      background-repeat: no-repeat;
+      background-position: center;
+      color: $secondary-color;
+      &.hidden {
+        border: solid thin $primary-cell-color;
+        background-color: $secondary-cell-color;
+        &:hover {
+          box-shadow: 1px 1px 5px black;
+          background-color: $secondary-color;
+        }
+      }
+      div {
+        position: absolute;
+        width: 100%;
+        margin: 0;
+        top: 50%;
+        font-size: 1rem;
+        transform: translate(0, -50%);
+        text-align: center;
+      }
+
+      &.lose {
+        background-color: tomato;
+      }
+
+      &.good {
+        background-color: #2ecc71;
+      }
+
+      /* svg files come from fontawesome.com */
+      &.bomb {
+        background-image: url("../images/minesweeper/bomb.svg");
+      }
+      &.flag {
+        background-image: url("../images/minesweeper/flag.svg");
+      }
+      &.questionMark {
+        background-image: url("../images/minesweeper/question.svg");
+      }
+
+      .n1 {
+        color: #1e3799;
+      }
+
+      .n2 {
+        color: #27ae60;
+      }
+
+      .n3 {
+        color: #c0392b;
+      }
+
+      .n4 {
+        color: #0c2461;
+      }
+
+      .n5 {
+        color: #cd6133;
+      }
+    }
+  }
+  #options {
+    width: 20%;
+    font-size: 1rem;
+    position: relative;
+    .button {
+      border: solid;
+      border-width: thin;
+      margin-top: 5%;
+      margin-left: 5%;
+      text-align: center;
+      cursor: pointer;
+      border: solid thin $primary-cell-color;
+      color: set-text-color($secondary-cell-color);
+      background-color: $secondary-cell-color;
+      border-radius: 5px;
+      @include easeOut;
+      &:hover {
+        color: set-text-color($secondary-color);
+        box-shadow: 1px 1px 5px black;
+        background: $secondary-color;
+      }
+    }
+    .infos {
+      justify-content: space-evenly;
+      align-items: center;
+      display: flex;
+    }
+
+    #buttons {
+      bottom: 0;
+      position: absolute;
+      width: 100%;
+    }
+    #buttons2 {
+      display: none;
+    }
+  }
+}

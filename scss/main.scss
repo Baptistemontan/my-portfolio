@@ -1,5 +1,6 @@
 @import "config";
 @import "menu";
+@import "minesweeper";
 
 * {
   box-sizing: border-box;
@@ -190,6 +191,15 @@ main {
   background: darken($primary-color, 10);
   color: set-text-color($primary-color);
   height: 60px;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently                             supported by Chrome, Opera and Firefox */
 }
 
 @import "mobile";

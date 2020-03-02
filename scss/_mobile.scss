@@ -55,6 +55,9 @@
   .projects {
     grid-template-columns: repeat(2, 1fr);
   }
+  #minesweeper {
+    width: 90%;
+  }
 }
 // smartphones
 @include mediaSm {
@@ -63,5 +66,8 @@
   }
   .projects {
     grid-template-columns: 1fr;
+  }
+  #minesweeper {
+    width: 95%;
   }
 }
