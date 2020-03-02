@@ -114,12 +114,13 @@
       background-size: 60%;
       background-repeat: no-repeat;
       background-position: center;
-      color: #eece1a;
-      /* svg files come from fontawesome.com */ }
+      color: #eece1a; }
       #minesweeper #board .cell.hidden {
         border: solid thin #c4c4c4;
-        background-color: #373737; }
+        background-color: #373737;
+        color: #fff; }
         #minesweeper #board .cell.hidden:hover {
+          color: #000;
           box-shadow: 1px 1px 5px black;
           background-color: #eece1a; }
       #minesweeper #board .cell div {
@@ -135,11 +136,7 @@
       #minesweeper #board .cell.good {
         background-color: #2ecc71; }
       #minesweeper #board .cell.bomb {
-        background-image: url("../images/minesweeper/bomb.svg"); }
-      #minesweeper #board .cell.flag {
-        background-image: url("../images/minesweeper/flag.svg"); }
-      #minesweeper #board .cell.questionMark {
-        background-image: url("../images/minesweeper/question.svg"); }
+        color: #000; }
       #minesweeper #board .cell .n1 {
         color: #1e3799; }
       #minesweeper #board .cell .n2 {

@@ -38,7 +38,9 @@ $secondary-cell-color: darken($primary-color, 5);
       &.hidden {
         border: solid thin $primary-cell-color;
         background-color: $secondary-cell-color;
+        color: set-text-color($secondary-cell-color);
         &:hover {
+          color: set-text-color($secondary-color);
           box-shadow: 1px 1px 5px black;
           background-color: $secondary-color;
         }
@@ -61,15 +63,8 @@ $secondary-cell-color: darken($primary-color, 5);
         background-color: #2ecc71;
       }
 
-      /* svg files come from fontawesome.com */
       &.bomb {
-        background-image: url("../images/minesweeper/bomb.svg");
-      }
-      &.flag {
-        background-image: url("../images/minesweeper/flag.svg");
-      }
-      &.questionMark {
-        background-image: url("../images/minesweeper/question.svg");
+        color: set-text-color($primary-cell-color);
       }
 
       .n1 {
