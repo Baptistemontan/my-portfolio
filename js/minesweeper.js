@@ -232,13 +232,13 @@
             $("#minesweeper #buttons2").css("display", "none");
             $("#minesweeper #buttons1").css("display", "block");
         });
-        $('#minesweeper #flag-toggle').click(function () {
+        $('#minesweeper #flag-toggle').click(function (e) {
             if (flagToggle) {
                 flagToggle = false;
-                $(this).removeClass('active');
+                $('#' + e.currentTarget.getAttribute('id')).removeClass('active');
             } else {
                 flagToggle = true;
-                $(this).addClass('active');
+                $('#' + e.currentTarget.getAttribute('id')).addClass('active');
             }
         });
     });
