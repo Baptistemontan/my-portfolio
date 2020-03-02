@@ -58,8 +58,10 @@
                             cell.html("<div class='n0'><div/>");
                         } else if (this.get(i, j) == -1) {
                             cell.addClass("bomb");
+                            cell.html('<div><i class="fas fa-bomb"></i><div/>');
                         } else if (this.get(i, j) == -2) {
                             cell.addClass("bomb good");
+                            cell.html('<div><i class="fas fa-bomb"></i><div/>');
                         } else {
                             cell.html("<div class='n" + this.get(i, j) + "'>" + this.get(i, j) + "<div/>");
                         }
@@ -156,11 +158,14 @@
                     if (cell.hasClass("flag")) {
                         cell.removeClass("flag");
                         cell.addClass("questionMark");
+                        cell.html('<div><i class="fas fa-question"></i><div/>');
                     } else if (cell.hasClass("questionMark")) {
                         cell.removeClass("questionMark");
+                        cell.html('');
                         Board.remaining++;
                     } else if (Board.remaining > 0) {
                         cell.addClass("flag");
+                        cell.html('<div><i class="far fa-flag"></i><div/>');
                         Board.remaining--;
                     }
                 }
