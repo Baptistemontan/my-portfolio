@@ -422,10 +422,10 @@ main {
         margin: 0.5rem 0; } }
 
 @media screen and (max-width: 500px) {
+  body {
+    background: red; }
   main#home h1 {
     margin-top: 10vh; }
-  .lg-heading {
-    font-size: 3rem; }
   .projects {
     grid-template-columns: 1fr; }
   #minesweeper-container {
@@ -434,7 +434,8 @@ main {
     padding-left: 0;
     padding-right: 0; }
     #minesweeper-container .lg-heading {
-      margin: 1rem 0; }
+      margin: 1rem 0;
+      font-size: 3rem; }
   #minesweeper {
     margin-top: 4rem;
     width: 95%; } }
