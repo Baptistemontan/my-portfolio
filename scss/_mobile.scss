@@ -89,9 +89,6 @@
 }
 // smartphones
 @include mediaSm {
-  body {
-    background: red;
-  }
   main#home h1 {
     margin-top: 10vh;
   }
