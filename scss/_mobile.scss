@@ -89,12 +89,11 @@
 }
 // smartphones
 @include mediaSm {
+  body {
+    background: red;
+  }
   main#home h1 {
     margin-top: 10vh;
-  }
-
-  .lg-heading {
-    font-size: 3rem;
   }
   .projects {
     grid-template-columns: 1fr;
@@ -106,6 +105,7 @@
     padding-right: 0;
     .lg-heading {
       margin: 1rem 0;
+      font-size: 3rem;
     }
   }
   #minesweeper {
