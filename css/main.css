@@ -198,6 +198,14 @@
   margin-bottom: 2rem; }
   #pathfinding .lg-heading {
     margin: 4rem; }
+  #pathfinding #visualize {
+    border: solid thin #fff;
+    border-radius: 2px;
+    width: 100px;
+    margin: auto;
+    margin-bottom: 20px;
+    text-align: center;
+    cursor: pointer; }
   #pathfinding #grid {
     justify-content: center;
     display: grid;
@@ -205,6 +213,7 @@
     #pathfinding #grid .node-row {
       display: flex; }
       #pathfinding #grid .node-row .node {
+        cursor: pointer;
         width: 25px;
         height: 25px;
         border: solid thin #c4c4c4;
