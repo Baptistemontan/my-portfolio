@@ -1,0 +1,41 @@
+#pathfinding {
+  width: 100%;
+  margin-bottom: 2rem;
+  .lg-heading {
+    margin: 4rem;
+  }
+  #grid {
+    justify-content: center;
+    display: grid;
+    grid-template-rows: repeat(20, 1fr);
+    .node-row {
+      display: flex;
+      .node {
+        width: 25px;
+        height: 25px;
+        border: solid thin $primary-cell-color;
+        background-color: $secondary-cell-color;
+        &.start {
+          background-color: #2ecc71;
+          border-color: $secondary-cell-color;
+        }
+        &.end {
+          background-color: tomato;
+          border-color: $secondary-cell-color;
+        }
+        &.visited {
+          background-color: $primary-cell-color;
+          border-color: $secondary-cell-color;
+        }
+        &.path {
+          background-color: $secondary-color;
+          border-color: $secondary-cell-color;
+        }
+        &.wall {
+          background-color: black;
+          border-color: $secondary-cell-color;
+        }
+      }
+    }
+  }
+}
