@@ -27,16 +27,24 @@ class Node {
     this.cell.mouseover(this.mouseOn.bind(this));
     this.cell.mouseup(this.mouseUp.bind(this))
   };
+  /*
+    the next 3 function is for wall insertion,
+    when a node is cliked we change mouseHold to true (mouseDown)
+    and we set it to false when the mouse stop being hold (mouseUp)
+    and we use this variable to know if we add a wall when the ouse over the node
+  */
   mouseDown = e => {
     mouseHold = true;
     this.mouseOn(e)
   }
   mouseUp = e => {
     mouseHold = false;
+    clearTimeout(timeOutRef);
+    timeOutRef = setTimeout(launch, 50);
   }
   mouseOn = e => {
     clearTimeout(timeOutRef);
-    if (mouseHold && !this.isStart && !this.isFinish) {
+    if (mouseHold && !this.isStart && !this.isFinish && startNode.assigned && finishNode.assigned) {
       if (this.isWall) {
         this.isWall = false
       } else {
@@ -46,8 +54,32 @@ class Node {
       timeOutRef = setTimeout(launch, 50);
     }
   }
+  //happend when the node is clicked
   click = e => {
-  };
+    if (this.isStart) {
+      this.isStart = false;
+      startNode.assigned = false;
+    } else if (this.isFinish) {
+      this.isFinish = false;
+      finishNode.assigned = false;
+    } else if (!startNode.assigned && !this.isFinish) {
+      this.isStart = true;
+      startNode = {
+        row: this.row,
+        col: this.col,
+        assigned: true
+      }
+    } else if (!finishNode.assigned && !this.isStart) {
+      this.isFinish = true;
+      finishNode = {
+        row: this.row,
+        col: this.col,
+        assigned: true
+      }
+    }
+    console.log(startNode, finishNode)
+    this.update();
+  }
   update = () => {
     //this update the node visually, it add the class for CSS
     if (this.isStart) { this.cell.addClass('start') } else { this.cell.removeClass('start') }
@@ -68,12 +100,14 @@ let grid = '';
 let nodeGrid = [];
 let startNode = {
   row: 10,
-  col: 5
-}
-let finishNode = {
-  row: 10,
-  col: 45
-}
+  col: 5,
+  assigned: true
+},
+  finishNode = {
+    row: 10,
+    col: 45,
+    assigned: true
+  }
 
 //
 for (let row = 0; row < ROW_NUMBER; row++) {
@@ -178,11 +212,11 @@ function pathfinding(previousNodes, goalRow, goalCol, animation = false, iterati
 
 //function to call when we want to launch the pathfinding algorithms
 function launch(animation = false) {
-  console.time('timer');
-  howMany = 0;
-  nodeGrid.forEach(row => row.forEach(node => node.reset()));
-  pathfinding([{ node: nodeGrid[startNode.row][startNode.col], path: [] }], finishNode.row, finishNode.col, animation)
-  console.log(howMany);
+  if (startNode.assigned != false && finishNode.assigned != false) {
+    console.time('timer');
+    nodeGrid.forEach(row => row.forEach(node => node.reset()));
+    pathfinding([{ node: nodeGrid[startNode.row][startNode.col], path: [] }], finishNode.row, finishNode.col, animation)
+  }
 }
 
 $(() => {
