@@ -4,6 +4,15 @@
   .lg-heading {
     margin: 4rem;
   }
+  #visualize {
+    border: solid thin set-text-color($primary-color);
+    border-radius: 2px;
+    width: 100px;
+    margin: auto;
+    margin-bottom: 20px;
+    text-align: center;
+    cursor: pointer;
+  }
   #grid {
     justify-content: center;
     display: grid;
@@ -11,6 +20,7 @@
     .node-row {
       display: flex;
       .node {
+        cursor: pointer;
         width: 25px;
         height: 25px;
         border: solid thin $primary-cell-color;
