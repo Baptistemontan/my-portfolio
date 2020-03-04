@@ -1,7 +1,7 @@
 //dimension of the grid
 const ROW_NUMBER = 25;
 const COL_NUMBER = 60;
-const UPDATE_DELAY = 20;
+const UPDATE_DELAY = 15;
 let mouseHold = false,
   addWall = false,
   removeWall = false,
@@ -131,12 +131,12 @@ let grid = '';
 let nodeGrid = [];
 let startNode = {
   row: 10,
-  col: 5,
+  col: 4,
   assigned: true
 },
   finishNode = {
     row: 10,
-    col: 45,
+    col: 46,
     assigned: true
   }
 
@@ -183,7 +183,7 @@ function pathfinding(previousNodes, goalRow, goalCol, ID, animation = false, ite
             node.node.update();
           }
         }
-        if (animation) { setTimeout(pathAnimation, UPDATE_DELAY * (iteration + 1 + index)) } else { pathAnimation() }
+        if (animation) { setTimeout(pathAnimation, UPDATE_DELAY * (iteration + index)) } else { pathAnimation() }
       }
     })
     return true;
@@ -274,6 +274,13 @@ $(() => {
   nodeGrid[startNode.row][startNode.col].update();
   nodeGrid[finishNode.row][finishNode.col].isFinish = true;
   nodeGrid[finishNode.row][finishNode.col].update();
+
+  // for (let col = 1; col < COL_NUMBER; col += 2) {
+  //   for (let row = 0; row < ROW_NUMBER; row++) {
+  //     nodeGrid[row][col].isWall = true;
+  //     nodeGrid[row][col].update();
+  //   }
+  // }
 
   $("#pathfinding #visualize").click(() => {
     launch(true);
