@@ -3,9 +3,12 @@ const ROW_NUMBER = 25;
 const COL_NUMBER = 60;
 const UPDATE_DELAY = 20;
 let mouseHold = false,
+  addWall = false,
+  removeWall = false,
   moveStart = false,
   moveEnd = false,
   diagonal = false,
+  launchID,
   timeOutRef;
 
 //Node class declaration, every grid cell has its own Node object
@@ -37,6 +40,11 @@ class Node {
   */
   mouseDown = e => {
     mouseHold = true;
+    if (this.isWall) {
+      removeWall = true
+    } else if (!this.isStart && !this.isFinish) {
+      addWall = true;
+    }
     if (this.isStart) {
       moveStart = true;
     } else if (this.isFinish) {
@@ -47,6 +55,8 @@ class Node {
   mouseUp = e => {
     mouseHold = false;
     moveStart = false;
+    addWall = false;
+    removeWall = false;
     moveEnd = false;
     clearTimeout(timeOutRef);
     timeOutRef = setTimeout(launch, 50);
@@ -54,19 +64,19 @@ class Node {
   mouseOn = e => {
     if (mouseHold && !this.isStart && !this.isFinish && startNode.assigned && finishNode.assigned && !moveStart && !moveEnd) {
       clearTimeout(timeOutRef);
-      if (this.isWall) {
+      if (this.isWall && removeWall == true) {
         this.isWall = false
-      } else {
+      } else if (!this.isWall && addWall == true) {
         this.isWall = true;
       }
       this.update();
       timeOutRef = setTimeout(launch, 50);
     }
-    if (mouseHold && (moveStart || moveEnd) && !this.isWall) {
+    if (mouseHold && ((moveStart && !this.isFinish) || (moveEnd && !this.isStart)) && !this.isWall) {
       if (moveStart) {
         nodeGrid[startNode.row][startNode.col].click();
         this.click();
-      } else {
+      } else if (moveEnd) {
         nodeGrid[finishNode.row][finishNode.col].click();
         this.click();
       }
@@ -156,7 +166,7 @@ that will give an array of all the node that are at a distance of exactly 2 of t
 ten we call the function again on the neighbours of the neighbours of the origin
 and this goes on
 */
-function pathfinding(previousNodes, goalRow, goalCol, animation = false, iteration = 0) {
+function pathfinding(previousNodes, goalRow, goalCol, ID, animation = false, iteration = 0) {
   //if there is no nodes to check, no need to run the function
   if (previousNodes.length < 1) { return false }
   //here is the array where nodes add there neigbours
@@ -164,11 +174,14 @@ function pathfinding(previousNodes, goalRow, goalCol, animation = false, iterati
   //this function is called when the goal is founded
   const isPath = (path) => {
     console.timeEnd('timer')
+    console.log(iteration)
     path.forEach((node, index) => {
       if (!node.node.isStart) {
         const pathAnimation = () => {
-          node.node.isPath = true;
-          node.node.update();
+          if (launchID == ID) {
+            node.node.isPath = true;
+            node.node.update();
+          }
         }
         if (animation) { setTimeout(pathAnimation, UPDATE_DELAY * (iteration + 1 + index)) } else { pathAnimation() }
       }
@@ -191,7 +204,7 @@ function pathfinding(previousNodes, goalRow, goalCol, animation = false, iterati
       // if its not the goal, not a wall and not visited we want it
       //we set visited to true and update it
       neighboursNode.isVisited = true;
-      const visitedAnimation = () => neighboursNode.update();
+      const visitedAnimation = () => { if (launchID == ID) { neighboursNode.update() } };
       if (animation) { setTimeout(visitedAnimation, UPDATE_DELAY * iteration) } else { visitedAnimation() }
 
       //then we push it to the general array of neighbours
@@ -227,20 +240,27 @@ function pathfinding(previousNodes, goalRow, goalCol, animation = false, iterati
       if (testNeighbours(nodeRow + 1, nodeCol - 1, path)) { return isPath(path) }
     }
   })) { return true }// and it make the function return true, and the recursion stops
-  return pathfinding(neighboursNodes, goalRow, goalCol, animation, iteration + 1);
+  return pathfinding(neighboursNodes, goalRow, goalCol, ID, animation, iteration + 1);
   //if the goal is not founded, we start again with the neighbours
 }
 
 function clear() {
   nodeGrid.forEach(row => row.forEach(node => node.reset()));
 }
+function clearWalls() {
+  nodeGrid.forEach(row => row.forEach(node => {
+    node.isWall = false;
+    node.update();
+  }))
+}
 
 //function to call when we want to launch the pathfinding algorithms
 function launch(animation = false) {
   if (startNode.assigned != false && finishNode.assigned != false) {
+    launchID = Math.random();
     console.time('timer');
     clear();
-    pathfinding([{ node: nodeGrid[startNode.row][startNode.col], path: [] }], finishNode.row, finishNode.col, animation)
+    pathfinding([{ node: nodeGrid[startNode.row][startNode.col], path: [] }], finishNode.row, finishNode.col, launchID, animation)
   }
 }
 
@@ -268,10 +288,11 @@ $(() => {
     }
   })
   $("#pathfinding #clearwalls").click(() => {
-    nodeGrid.forEach(row => row.forEach(node => {
-      node.isWall = false;
-      node.update();
-    }))
+    clearWalls();
     launch();
+  })
+  $('#pathfinding #clear').click(() => {
+    launchID = Math.random();
+    clear();
   })
 })
