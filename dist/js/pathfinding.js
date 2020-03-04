@@ -1,7 +1,9 @@
 //dimension of the grid
 const ROW_NUMBER = 30;
 const COL_NUMBER = 50;
-let mouseHold = false;
+let mouseHold = false,
+  howMany = 0,
+  diagonal = false;
 
 //Node class declaration, every grid cell has its own Node object
 class Node {
@@ -138,8 +140,6 @@ that will give an array of all the node that are at a distance of exactly 2 of t
 ten we call the function again on the neighbours of the neighbours of the origin
 and this goes on
 */
-let howMany = 0,
-  diagonal = true;
 function pathfinding(previousNodes, goalRow, goalCol) {
   howMany++;
   //if there is no nodes to check, no need to run the function
