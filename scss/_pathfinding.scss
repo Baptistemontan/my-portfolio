@@ -1,3 +1,6 @@
+$start-color: #2ecc71;
+$end-color: tomato;
+
 #pathfinding {
   width: 100%;
   margin-bottom: 2rem;
@@ -14,28 +17,62 @@
       margin-bottom: 20px;
       text-align: center;
       cursor: pointer;
+      &.true {
+        background-color: $start-color;
+        color: set-text-color($start-color);
+      }
+      &.false {
+        background-color: $end-color;
+        color: set-text-color($end-color);
+      }
+      &.hover:hover {
+        background-color: $secondary-color;
+        color: set-text-color($secondary-color);
+      }
     }
   }
   #grid {
-    justify-content: center;
+    // justify-content: center;
     display: grid;
     width: 1250px;
     margin: auto;
     .node {
+      position: relative;
       cursor: pointer;
-      width: 25px;
-      height: 25px;
+      width: 100%;
+      padding-bottom: 100%;
       border: solid thin $primary-cell-color;
       background-color: $secondary-cell-color;
+      div {
+        position: absolute;
+        width: 100%;
+        margin: 0;
+        top: 50%;
+        font-size: 1.1vw;
+        transform: translate(0, -50%);
+        text-align: center;
+        i {
+          display: none;
+          margin: auto;
+        }
+      }
       &.start {
-        background-color: #2ecc71;
+        background-color: $start-color;
         border-color: $secondary-cell-color;
         cursor: move;
+        i.istart {
+          display: block;
+          color: set-text-color($start-color);
+        }
       }
       &.end {
-        background-color: tomato;
+        background-color: $end-color;
         border-color: $secondary-cell-color;
         cursor: move;
+        i.iend {
+          display: block;
+          color: set-text-color($end-color);
+        }
       }
       &.visited {
         background-color: $primary-cell-color;
