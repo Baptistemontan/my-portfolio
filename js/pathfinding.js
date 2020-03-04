@@ -254,7 +254,6 @@ $(() => {
   nodeGrid[startNode.row][startNode.col].update();
   nodeGrid[finishNode.row][finishNode.col].isFinish = true;
   nodeGrid[finishNode.row][finishNode.col].update();
-  launch();
 
   $("#pathfinding #visualize").click(() => {
     launch(true);
