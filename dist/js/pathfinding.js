@@ -10,7 +10,7 @@
     moveStart = false,
     moveEnd = false,
     diagonal = false,
-    toggleVisited = false,
+    toggleVisited = true,
     launchID,
     timeOutRef,
     grid = '',
@@ -37,6 +37,8 @@
       this.isWall = false;
       this.isVisited = false;
       this.isPath = false;
+      this.weight = 1;
+      this.distance = undefined;
     }
     init = () => {
       //we retrieve the Jquery reference for itself
@@ -150,9 +152,12 @@
       if (this.isPath) { this.cell.addClass('path') } else { this.cell.removeClass('path') }
     };
     reset = () => {
-      //everytime we rerun the pathfiding we need to reset those two variable
+      //everytime we rerun the pathfiding we need to reset those variables
       this.isVisited = false;
       this.isPath = false;
+      this.isChecked = false;
+      this.distance = undefined;
+      this.parentNode = undefined;
       this.update();
     };
   }
@@ -165,6 +170,75 @@
       grid += '<div id="' + row + '-' + col + '" class="node"><div><i class="far fa-dot-circle iend"></i><i class="far fa-compass istart"></i></div></div>';
     }
   }
+
+
+  function dijkstra(parentNode, nodeQueue = [], goalRow, goalCol, ID, animation = false, iteration = 0) {
+    const vectors = [{ row: 1, col: 0 }, { row: -1, col: 0 }, { row: 0, col: 1 }, { row: 0, col: -1 }];
+    const pathFounded = parent => {
+      if (!parent.isStart) {
+        parent.isPath = true;
+        parent.update();
+        pathFounded(parent.parentNode);
+      }
+    }
+    const testNeighbour = (row, col) => {
+      //if its off limit,checked, a wall or the start node we dont want it
+      if (row < ROW_NUMBER && row >= 0 && col < COL_NUMBER && col >= 0) {
+        //we retrieve the node
+        const neighbourNode = nodeGrid[row][col];
+        let founded = false;
+        if (neighbourNode.isWall || neighbourNode.isChecked || neighbourNode.isStart) {
+          return false
+        }
+        if (row == goalRow && col == goalCol) {
+          founded = true;
+        }
+
+        if (neighbourNode.distance == undefined && !founded) {
+          nodeQueue.push(neighbourNode);
+        }
+        if (neighbourNode.weight + parentNode.distance < neighbourNode.distance || neighbourNode.distance == undefined) {
+          neighbourNode.distance = neighbourNode.weight + parentNode.distance;
+          neighbourNode.parentNode = parentNode;
+        }
+        if (founded) {
+          return neighbourNode;
+        }
+        neighbourNode.isVisited = true;
+        neighbourNode.update();
+        // // if its not the goal, not a wall and not visited we want it
+        // //we set visited to true
+        // neighbourNode.isVisited = true;
+        // //see launch declaration for lauchID explanation
+        // //this function update the node
+        // const visitedAnimation = () => { if (launchID == ID) { neighbourNode.update() } };
+        // //if the animations are on, we set a timeout, otherwise we just execute the function 
+        // if (animation && toggleVisited) { setTimeout(visitedAnimation, UPDATE_DELAY * iteration) } else { visitedAnimation() }
+        //if its our goal, we return true
+
+      } else { return false }
+    }
+    if (vectors.some((vector, index) => {
+      let result = testNeighbour(parentNode.row + vector.row, parentNode.col + vector.col);
+      if (result) {
+        nodeQueue.sort((a, b) => a.distance - b.distance);
+        if (result.distance - result.weight <= nodeQueue[0].distance) {
+          console.timeEnd('dijkstra')
+          pathFounded(result.parentNode);
+          return true
+        }
+      }
+    })) {
+      nodeQueue.sort((a, b) => a.distance - b.distance);
+      return true
+    }
+
+    const nextNode = nodeQueue[0];
+    nodeQueue.shift();
+    nodeQueue.isChecked = true;
+    return dijkstra(nextNode, nodeQueue, goalRow, goalCol, ID, animation, iteration)
+  }
+
 
   /*
   this is the main function, here the idea of how it work
@@ -188,7 +262,7 @@
     let neighboursNodes = [];
     //this function is called when the goal is founded
     const isPath = (path) => {
-      console.timeEnd('timer')
+      console.timeEnd('myPathFinder')
       //here we update the path, we go through each node and update them
       path.forEach((node, index) => {
         //we skip the start node
@@ -210,7 +284,7 @@
     }
     //thats the function that retrieve the neigbours of the current node
     const testNeighbours = (row, col, path) => {
-      //if its of limit, we dont try
+      //if its off limit, we dont try
       if (row < ROW_NUMBER && row >= 0 && col < COL_NUMBER && col >= 0) {
         //if its our goal, we return true
         if (row == goalRow && col == goalCol) {
@@ -218,7 +292,7 @@
         }
         //we retrieve the node
         const neighboursNode = nodeGrid[row][col];
-        //if its a neigbour, a wall or the start node we dont want it
+        //if its visited, a wall or the start node we dont want it
         if (neighboursNode.isVisited || neighboursNode.isWall || neighboursNode.isStart) {
           return false
         }
@@ -284,9 +358,12 @@
       //if we didnt had that, due to the setTimeout we could have artefact from the previous rendering
       //so we give it a random ID, so that if we rerender it stop the previous rendering
       launchID = Math.random();
-      console.time('timer');
+      console.time('myPathFinder');
       clear();
       pathfinding([{ node: nodeGrid[startNode.row][startNode.col], path: [] }], finishNode.row, finishNode.col, launchID, animation)
+      // clear();
+      // nodeGrid[startNode.row][startNode.col].distance = 0;
+      // dijkstra(nodeGrid[startNode.row][startNode.col], [], finishNode.row, finishNode.col, launchID, animation);
     }
   }
 
@@ -336,6 +413,12 @@
         toggleVisited = true;
       }
       launch(true);
+    })
+    $('#pathfinding #djikstra').click(e => {
+      console.time('dijkstra');
+      clear();
+      nodeGrid[startNode.row][startNode.col].distance = 0;
+      dijkstra(nodeGrid[startNode.row][startNode.col], [], finishNode.row, finishNode.col);
     })
   })
 })()
