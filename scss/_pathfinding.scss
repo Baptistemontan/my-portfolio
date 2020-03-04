@@ -30,10 +30,12 @@
       &.start {
         background-color: #2ecc71;
         border-color: $secondary-cell-color;
+        cursor: move;
       }
       &.end {
         background-color: tomato;
         border-color: $secondary-cell-color;
+        cursor: move;
       }
       &.visited {
         background-color: $primary-cell-color;

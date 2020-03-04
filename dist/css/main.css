@@ -221,10 +221,12 @@
       background-color: #373737; }
       #pathfinding #grid .node.start {
         background-color: #2ecc71;
-        border-color: #373737; }
+        border-color: #373737;
+        cursor: move; }
       #pathfinding #grid .node.end {
         background-color: tomato;
-        border-color: #373737; }
+        border-color: #373737;
+        cursor: move; }
       #pathfinding #grid .node.visited {
         background-color: #c4c4c4;
         border-color: #373737; }
