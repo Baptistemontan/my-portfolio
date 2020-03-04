@@ -9,9 +9,21 @@
     moveStart = false,
     moveEnd = false,
     diagonal = false,
-    toggleVisited = true,
+    toggleVisited = false,
     launchID,
-    timeOutRef;
+    timeOutRef,
+    grid = '',
+    nodeGrid = [],
+    startNode = {
+      row: 10,
+      col: 4,
+      assigned: true
+    },
+    finishNode = {
+      row: 10,
+      col: 46,
+      assigned: true
+    }
 
   //Node class declaration, every grid cell has its own Node object
   class Node {
@@ -129,28 +141,13 @@
     };
   }
 
-  let grid = '';
-  let nodeGrid = [];
-  let startNode = {
-    row: 10,
-    col: 4,
-    assigned: true
-  },
-    finishNode = {
-      row: 10,
-      col: 46,
-      assigned: true
-    }
-
-  //
+  //nodeGrid and html grid init
   for (let row = 0; row < ROW_NUMBER; row++) {
     nodeGrid[row] = [];
-    // grid += '<div class="node-row">';
     for (let col = 0; col < COL_NUMBER; col++) {
       nodeGrid[row][col] = new Node(row, col);
       grid += '<div id="' + row + '-' + col + '" class="node"></div>';
     }
-    // grid += '</div>'
   }
 
   /*
@@ -176,7 +173,6 @@
     //this function is called when the goal is founded
     const isPath = (path) => {
       console.timeEnd('timer')
-      console.log(iteration)
       path.forEach((node, index) => {
         if (!node.node.isStart) {
           const pathAnimation = () => {
@@ -276,13 +272,6 @@
     nodeGrid[startNode.row][startNode.col].update();
     nodeGrid[finishNode.row][finishNode.col].isFinish = true;
     nodeGrid[finishNode.row][finishNode.col].update();
-
-    // for (let col = 1; col < COL_NUMBER; col += 2) {
-    //   for (let row = 0; row < ROW_NUMBER; row++) {
-    //     nodeGrid[row][col].isWall = true;
-    //     nodeGrid[row][col].update();
-    //   }
-    // }
 
     $("#pathfinding #visualize").click(() => {
       launch(true);
