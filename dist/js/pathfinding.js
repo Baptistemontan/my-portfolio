@@ -3,7 +3,8 @@ const ROW_NUMBER = 30;
 const COL_NUMBER = 50;
 const UPDATE_DELAY = 20;
 let mouseHold = false,
-  diagonal = false;
+  diagonal = false,
+  timeOutRef;
 
 //Node class declaration, every grid cell has its own Node object
 class Node {
@@ -34,14 +35,15 @@ class Node {
     mouseHold = false;
   }
   mouseOn = e => {
-    if (mouseHold) {
+    clearTimeout(timeOutRef);
+    if (mouseHold && !this.isStart && !this.isFinish) {
       if (this.isWall) {
         this.isWall = false
       } else {
         this.isWall = true;
       }
       this.update();
-      launch();
+      timeOutRef = setTimeout(launch, 50);
     }
   }
   click = e => {
@@ -76,12 +78,12 @@ let finishNode = {
 //
 for (let row = 0; row < ROW_NUMBER; row++) {
   nodeGrid[row] = [];
-  grid += '<div class="node-row">';
+  // grid += '<div class="node-row">';
   for (let col = 0; col < COL_NUMBER; col++) {
     nodeGrid[row][col] = new Node(row, col);
     grid += '<div id="' + row + '-' + col + '" class="node"></div>';
   }
-  grid += '</div>'
+  // grid += '</div>'
 }
 
 /*
@@ -185,7 +187,7 @@ function launch(animation = false) {
 
 $(() => {
   //initialisation of the script when the DOM is ready
-  $('#pathfinding #grid').html(grid).css('grid-template-rows', 'repeat(' + ROW_NUMBER + ', 1fr)')
+  $('#pathfinding #grid').html(grid).css('grid-template-columns', 'repeat(' + COL_NUMBER + ', 1fr)')
   //initialisation of every node
   nodeGrid.forEach(row => row.forEach(e => e.init()))
   //setting up start and end node
@@ -197,5 +199,12 @@ $(() => {
 
   $("#pathfinding #visualize").click(() => {
     launch(true);
+  })
+  $("#pathfinding #clearwalls").click(() => {
+    nodeGrid.forEach(row => row.forEach(node => {
+      node.isWall = false;
+      node.update();
+    }))
+    launch();
   })
 })

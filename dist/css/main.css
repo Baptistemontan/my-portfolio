@@ -198,41 +198,42 @@
   margin-bottom: 2rem; }
   #pathfinding .lg-heading {
     margin: 4rem; }
-  #pathfinding #visualize {
-    border: solid thin #fff;
-    border-radius: 2px;
-    width: 100px;
-    margin: auto;
-    margin-bottom: 20px;
-    text-align: center;
-    cursor: pointer; }
+  #pathfinding #buttons {
+    display: flex;
+    justify-content: space-evenly; }
+    #pathfinding #buttons .button {
+      border: solid thin #fff;
+      border-radius: 2px;
+      width: 100px;
+      margin-bottom: 20px;
+      text-align: center;
+      cursor: pointer; }
   #pathfinding #grid {
     justify-content: center;
     display: grid;
-    grid-template-rows: repeat(20, 1fr); }
-    #pathfinding #grid .node-row {
-      display: flex; }
-      #pathfinding #grid .node-row .node {
-        cursor: pointer;
-        width: 25px;
-        height: 25px;
-        border: solid thin #c4c4c4;
-        background-color: #373737; }
-        #pathfinding #grid .node-row .node.start {
-          background-color: #2ecc71;
-          border-color: #373737; }
-        #pathfinding #grid .node-row .node.end {
-          background-color: tomato;
-          border-color: #373737; }
-        #pathfinding #grid .node-row .node.visited {
-          background-color: #c4c4c4;
-          border-color: #373737; }
-        #pathfinding #grid .node-row .node.path {
-          background-color: #eece1a;
-          border-color: #373737; }
-        #pathfinding #grid .node-row .node.wall {
-          background-color: black;
-          border-color: #373737; }
+    width: 1250px;
+    margin: auto; }
+    #pathfinding #grid .node {
+      cursor: pointer;
+      width: 25px;
+      height: 25px;
+      border: solid thin #c4c4c4;
+      background-color: #373737; }
+      #pathfinding #grid .node.start {
+        background-color: #2ecc71;
+        border-color: #373737; }
+      #pathfinding #grid .node.end {
+        background-color: tomato;
+        border-color: #373737; }
+      #pathfinding #grid .node.visited {
+        background-color: #c4c4c4;
+        border-color: #373737; }
+      #pathfinding #grid .node.path {
+        background-color: #eece1a;
+        border-color: #373737; }
+      #pathfinding #grid .node.wall {
+        background-color: black;
+        border-color: #373737; }
 
 * {
   box-sizing: border-box; }
