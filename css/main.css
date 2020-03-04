@@ -208,25 +208,51 @@
       margin-bottom: 20px;
       text-align: center;
       cursor: pointer; }
+      #pathfinding #buttons .button.true {
+        background-color: #2ecc71;
+        color: #000; }
+      #pathfinding #buttons .button.false {
+        background-color: tomato;
+        color: #000; }
+      #pathfinding #buttons .button.hover:hover {
+        background-color: #eece1a;
+        color: #000; }
   #pathfinding #grid {
-    justify-content: center;
     display: grid;
     width: 1250px;
     margin: auto; }
     #pathfinding #grid .node {
+      position: relative;
       cursor: pointer;
-      width: 25px;
-      height: 25px;
+      width: 100%;
+      padding-bottom: 100%;
       border: solid thin #c4c4c4;
       background-color: #373737; }
+      #pathfinding #grid .node div {
+        position: absolute;
+        width: 100%;
+        margin: 0;
+        top: 50%;
+        font-size: 1.1vw;
+        transform: translate(0, -50%);
+        text-align: center; }
+        #pathfinding #grid .node div i {
+          display: none;
+          margin: auto; }
       #pathfinding #grid .node.start {
         background-color: #2ecc71;
         border-color: #373737;
         cursor: move; }
+        #pathfinding #grid .node.start i.istart {
+          display: block;
+          color: #000; }
       #pathfinding #grid .node.end {
         background-color: tomato;
         border-color: #373737;
         cursor: move; }
+        #pathfinding #grid .node.end i.iend {
+          display: block;
+          color: #000; }
       #pathfinding #grid .node.visited {
         background-color: #c4c4c4;
         border-color: #373737; }

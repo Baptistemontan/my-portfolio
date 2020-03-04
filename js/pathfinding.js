@@ -1,17 +1,30 @@
+//everything is inside an anonymous function who is directly call after its declaration so that its global variables are contained in itself
 (function () {
-  //dimension of the grid
+  //global variables and constant declaration
   const ROW_NUMBER = 25;
   const COL_NUMBER = 60;
-  const UPDATE_DELAY = 15;
+  const UPDATE_DELAY = 30;
   let mouseHold = false,
     addWall = false,
     removeWall = false,
     moveStart = false,
     moveEnd = false,
     diagonal = false,
-    toggleVisited = true,
+    toggleVisited = false,
     launchID,
-    timeOutRef;
+    timeOutRef,
+    grid = '',
+    nodeGrid = [],
+    startNode = {
+      row: 13,
+      col: 9,
+      assigned: false
+    },
+    finishNode = {
+      row: 13,
+      col: 49,
+      assigned: false
+    }
 
   //Node class declaration, every grid cell has its own Node object
   class Node {
@@ -26,20 +39,18 @@
       this.isPath = false;
     }
     init = () => {
-      //init of cell (visualy)
-      //and retrieve of Jquery reference for itself
+      //we retrieve the Jquery reference for itself
+      //and add all the event callbacks
       this.cell = $('#pathfinding #' + this.row + '-' + this.col);
+      //we bind itself to the function
       this.cell.click(this.click.bind(this));
       this.cell.mousedown(this.mouseDown.bind(this));
       this.cell.mouseover(this.mouseOn.bind(this));
-      this.cell.mouseup(this.mouseUp.bind(this))
+      this.cell.mouseup(this.mouseUp.bind(this));
     };
-    /*
-      the next 3 function is for wall insertion,
-      when a node is cliked we change mouseHold to true (mouseDown)
-      and we set it to false when the mouse stop being hold (mouseUp)
-      and we use this variable to know if we add a wall when the mouse over the node
-    */
+    //this function if to detect when an user press the mouse on the node,
+    //if its on a wall/empty space, we know that he want to remove/add wall,
+    //on the start/end node that he want to move it
     mouseDown = e => {
       mouseHold = true;
       if (this.isWall) {
@@ -52,8 +63,10 @@
       } else if (this.isFinish) {
         moveEnd = true;
       }
+      //we have to trigger the mouseOn function manually because the hover event happen before the mouse down
       this.mouseOn(e)
     }
+    //here its to clear all the variable when the user release the mouse
     mouseUp = e => {
       mouseHold = false;
       moveStart = false;
@@ -63,8 +76,21 @@
       clearTimeout(timeOutRef);
       timeOutRef = setTimeout(launch, 50);
     }
+    //here its when the user hover the node
     mouseOn = e => {
+      //if no start node is present we add an hover effect to show him he can put one down
+      if (!startNode.assigned && !this.isWall && !this.isFinish) {
+        $('#pathfinding .start').removeClass('start');
+        this.cell.addClass('start');
+      }
+      //same but for end node
+      if (!finishNode.assigned && !this.isWall && !this.isStart) {
+        $('#pathfinding .end').removeClass('end');
+        this.cell.addClass('end');
+      }
+      //here its for adding/removing walls
       if (mouseHold && !this.isStart && !this.isFinish && startNode.assigned && finishNode.assigned && !moveStart && !moveEnd) {
+        //the timeout is here to prevent the re-render of the path if the user create lot of walls at once
         clearTimeout(timeOutRef);
         if (this.isWall && removeWall == true) {
           this.isWall = false
@@ -74,6 +100,8 @@
         this.update();
         timeOutRef = setTimeout(launch, 50);
       }
+      //here its when th user drag the end/start node
+      //we could do the same timeout as the walls but the animation is way much crappier
       if (mouseHold && ((moveStart && !this.isFinish) || (moveEnd && !this.isStart)) && !this.isWall) {
         if (moveStart) {
           nodeGrid[startNode.row][startNode.col].click();
@@ -129,28 +157,13 @@
     };
   }
 
-  let grid = '';
-  let nodeGrid = [];
-  let startNode = {
-    row: 10,
-    col: 4,
-    assigned: true
-  },
-    finishNode = {
-      row: 10,
-      col: 46,
-      assigned: true
-    }
-
-  //
+  //nodeGrid and html grid init
   for (let row = 0; row < ROW_NUMBER; row++) {
     nodeGrid[row] = [];
-    // grid += '<div class="node-row">';
     for (let col = 0; col < COL_NUMBER; col++) {
       nodeGrid[row][col] = new Node(row, col);
-      grid += '<div id="' + row + '-' + col + '" class="node"></div>';
+      grid += '<div id="' + row + '-' + col + '" class="node"><div><i class="far fa-dot-circle iend"></i><i class="far fa-compass istart"></i></div></div>';
     }
-    // grid += '</div>'
   }
 
   /*
@@ -176,18 +189,23 @@
     //this function is called when the goal is founded
     const isPath = (path) => {
       console.timeEnd('timer')
-      console.log(iteration)
+      //here we update the path, we go through each node and update them
       path.forEach((node, index) => {
+        //we skip the start node
         if (!node.node.isStart) {
+          //this function is call for the rendering
           const pathAnimation = () => {
+            //see the launch function description for the launchID, it prevent artefact from rerendering
             if (launchID == ID) {
               node.node.isPath = true;
               node.node.update();
             }
           }
+          //if animations are on, we set a timeout, otherwise we just execute the function
           if (animation) { setTimeout(pathAnimation, UPDATE_DELAY * ((toggleVisited ? iteration : 0) + index)) } else { pathAnimation() }
         }
       })
+      //and we return true to end the recursion
       return true;
     }
     //thats the function that retrieve the neigbours of the current node
@@ -198,15 +216,19 @@
         if (row == goalRow && col == goalCol) {
           return true
         }
+        //we retrieve the node
         const neighboursNode = nodeGrid[row][col];
         //if its a neigbour, a wall or the start node we dont want it
         if (neighboursNode.isVisited || neighboursNode.isWall || neighboursNode.isStart) {
           return false
         }
         // if its not the goal, not a wall and not visited we want it
-        //we set visited to true and update it
+        //we set visited to true
         neighboursNode.isVisited = true;
+        //see launch declaration for lauchID explanation
+        //this function update the node
         const visitedAnimation = () => { if (launchID == ID) { neighboursNode.update() } };
+        //if the animations are on, we set a timeout, otherwise we just execute the function 
         if (animation && toggleVisited) { setTimeout(visitedAnimation, UPDATE_DELAY * iteration) } else { visitedAnimation() }
 
         //then we push it to the general array of neighbours
@@ -217,6 +239,10 @@
         });
       } else { return false }
     }
+    //here is the array of vectors
+    const vectors = [{ row: 1, col: 0 }, { row: -1, col: 0 }, { row: 0, col: 1 }, { row: 0, col: -1 }]
+    //if diagonal is  on, we add the diagonal vectors
+    if (diagonal) { vectors.push({ row: 1, col: 1 }, { row: -1, col: 1 }, { row: -1, col: -1 }, { row: 1, col: -1 }) }
     //here its a forEach loop but its stop when the iteration return true 
     //and if a iteration return true, the forEach return true
     if (previousNodes.some(node => {
@@ -228,24 +254,18 @@
       let path = node.path.slice();
       //and we push the current node to the path
       path.push(node);
-      //then we test all the neigbours node
+      //then we test all the neigbours node (based on the vectors)
       //and if testNeighbours return true, we call the isPath function
       //which always return true, so the forEach stops and return true
-      if (testNeighbours(nodeRow - 1, nodeCol, path)) { return isPath(path) }
-      if (testNeighbours(nodeRow + 1, nodeCol, path)) { return isPath(path) }
-      if (testNeighbours(nodeRow, nodeCol + 1, path)) { return isPath(path) }
-      if (testNeighbours(nodeRow, nodeCol - 1, path)) { return isPath(path) }
-      if (diagonal) {
-        if (testNeighbours(nodeRow - 1, nodeCol + 1, path)) { return isPath(path) }
-        if (testNeighbours(nodeRow - 1, nodeCol - 1, path)) { return isPath(path) }
-        if (testNeighbours(nodeRow + 1, nodeCol + 1, path)) { return isPath(path) }
-        if (testNeighbours(nodeRow + 1, nodeCol - 1, path)) { return isPath(path) }
-      }
+      return vectors.some(vector => {
+        if (testNeighbours(nodeRow + vector.row, nodeCol + vector.col, path)) { return isPath(path) }
+      })
     })) { return true }// and it make the function return true, and the recursion stops
     return pathfinding(neighboursNodes, goalRow, goalCol, ID, animation, iteration + 1);
     //if the goal is not founded, we start again with the neighbours
   }
 
+  //those two functions does exactly what their name say
   function clear() {
     nodeGrid.forEach(row => row.forEach(node => node.reset()));
   }
@@ -258,7 +278,11 @@
 
   //function to call when we want to launch the pathfinding algorithms
   function launch(animation = false) {
+    //we verify that the start/end nodes are placed
     if (startNode.assigned != false && finishNode.assigned != false) {
+      //the lauchId is just here to prevent rendering artefact if we render at the middle of one,
+      //if we didnt had that, due to the setTimeout we could have artefact from the previous rendering
+      //so we give it a random ID, so that if we rerender it stop the previous rendering
       launchID = Math.random();
       console.time('timer');
       clear();
@@ -274,19 +298,15 @@
     //setting up start and end node
     nodeGrid[startNode.row][startNode.col].isStart = true;
     nodeGrid[startNode.row][startNode.col].update();
+    startNode.assigned = true;
     nodeGrid[finishNode.row][finishNode.col].isFinish = true;
     nodeGrid[finishNode.row][finishNode.col].update();
-
-    // for (let col = 1; col < COL_NUMBER; col += 2) {
-    //   for (let row = 0; row < ROW_NUMBER; row++) {
-    //     nodeGrid[row][col].isWall = true;
-    //     nodeGrid[row][col].update();
-    //   }
-    // }
-
+    finishNode.assigned = true;
+    //launch the pathfinding visualizer but with the animations
     $("#pathfinding #visualize").click(() => {
       launch(true);
     })
+    //allow/prevent the algorithm to go diagonally
     $("#pathfinding #digonal").click(() => {
       if (diagonal) {
         diagonal = false;
@@ -296,18 +316,23 @@
         launch(true);
       }
     })
+    //clear the walls and rerender
     $("#pathfinding #clearwalls").click(() => {
       clearWalls();
       launch();
     })
+    //clear and stop current rendering
     $('#pathfinding #clear').click(() => {
       launchID = Math.random();
       clear();
     })
-    $('#pathfinding #togglevisited').click(() => {
+    //show/hide visited nodes and rerender
+    $('#pathfinding #togglevisited').click(function () {
       if (toggleVisited) {
+        $(this).removeClass('true').addClass('false')
         toggleVisited = false;
       } else {
+        $(this).removeClass('false').addClass('true')
         toggleVisited = true;
       }
       launch(true);
