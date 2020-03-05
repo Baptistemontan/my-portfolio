@@ -4,17 +4,23 @@
   const ROW_NUMBER = 25;
   const COL_NUMBER = 60;
   const UPDATE_DELAY = 30;
+  const WEIGHT = 15;
+  const ALGO = ['myAlgo', 'Dijkstra', 'A*'];
   let mouseHold = false,
     addWall = false,
     removeWall = false,
+    addWeight = false,
+    removeWeight = false,
+    weight = false,
     moveStart = false,
     moveEnd = false,
     diagonal = false,
-    toggleVisited = true,
+    toggleVisited = false,
     launchID,
     timeOutRef,
     grid = '',
     nodeGrid = [],
+    currentAlgo = 0,
     startNode = {
       row: 13,
       col: 9,
@@ -39,6 +45,7 @@
       this.isPath = false;
       this.weight = 1;
       this.distance = undefined;
+      this.euclDistance = undefined;
     }
     init = () => {
       //we retrieve the Jquery reference for itself
@@ -55,10 +62,18 @@
     //on the start/end node that he want to move it
     mouseDown = e => {
       mouseHold = true;
-      if (this.isWall) {
-        removeWall = true
-      } else if (!this.isStart && !this.isFinish) {
-        addWall = true;
+      if (weight) {
+        if (this.weight > 1) {
+          removeWeight = true;
+        } else if (!this.isStart && !this.isFinish) {
+          addWeight = true;
+        }
+      } else {
+        if (this.isWall) {
+          removeWall = true
+        } else if (!this.isStart && !this.isFinish) {
+          addWall = true;
+        }
       }
       if (this.isStart) {
         moveStart = true;
@@ -75,6 +90,8 @@
       addWall = false;
       removeWall = false;
       moveEnd = false;
+      removeWeight = false;
+      addWeight = false;
       clearTimeout(timeOutRef);
       timeOutRef = setTimeout(launch, 50);
     }
@@ -94,10 +111,18 @@
       if (mouseHold && !this.isStart && !this.isFinish && startNode.assigned && finishNode.assigned && !moveStart && !moveEnd) {
         //the timeout is here to prevent the re-render of the path if the user create lot of walls at once
         clearTimeout(timeOutRef);
-        if (this.isWall && removeWall == true) {
-          this.isWall = false
-        } else if (!this.isWall && addWall == true) {
-          this.isWall = true;
+        if (weight) {
+          if (this.weight > 1 && removeWeight) {
+            this.weight = 1;
+          } else if (this.weight == 1 && addWeight && !this.isWall) {
+            this.weight = WEIGHT;
+          }
+        } else {
+          if (this.isWall && removeWall) {
+            this.isWall = false
+          } else if (!this.isWall && addWall && !(this.weight > 1)) {
+            this.isWall = true;
+          }
         }
         this.update();
         timeOutRef = setTimeout(launch, 50);
@@ -148,8 +173,9 @@
       if (this.isStart) { this.cell.addClass('start') } else { this.cell.removeClass('start') }
       if (this.isFinish) { this.cell.addClass('end') } else { this.cell.removeClass('end') }
       if (this.isWall) { this.cell.addClass('wall') } else { this.cell.removeClass('wall') }
-      if (this.isVisited && !this.isPath && toggleVisited) { this.cell.addClass('visited') } else { this.cell.removeClass('visited') }
-      if (this.isPath) { this.cell.addClass('path') } else { this.cell.removeClass('path') }
+      if (this.weight > 1) { this.cell.addClass('weight') } else { this.cell.removeClass('weight') }
+      if (this.isVisited && !this.isPath && toggleVisited && !this.isFinish) { this.cell.addClass('visited') } else { this.cell.removeClass('visited') }
+      if (this.isPath && !this.isFinish) { this.cell.addClass('path') } else { this.cell.removeClass('path') }
     };
     reset = () => {
       //everytime we rerun the pathfiding we need to reset those variables
@@ -158,6 +184,7 @@
       this.isChecked = false;
       this.distance = undefined;
       this.parentNode = undefined;
+      this.euclDistance = undefined;
       this.update();
     };
   }
@@ -171,14 +198,25 @@
     }
   }
 
-
-  function dijkstra(parentNode, nodeQueue = [], goalRow, goalCol, ID, animation = false, iteration = 0) {
+  function Astar(parentNode, goalRow, goalCol, ID, animation = false, nodeQueue = [], iteration = 0) {
     const vectors = [{ row: 1, col: 0 }, { row: -1, col: 0 }, { row: 0, col: 1 }, { row: 0, col: -1 }];
-    const pathFounded = parent => {
+    if (diagonal) { vectors.push({ row: 1, col: 1 }, { row: -1, col: 1 }, { row: -1, col: -1 }, { row: 1, col: -1 }) }
+    const sortQueue = () => nodeQueue.sort((a, b) => {
+      let comparaison = (a.distance + a.euclDistance) - (b.distance + b.euclDistance);
+      // if (comparaison != 0) {
+      //   return comparaison
+      // } else {
+      //   return a.euclDistance - b.euclDistance;
+      // }
+      return comparaison
+      // here we sort by the order of euclidian distance to the goal + the distance to the origin
+    });
+    const pathFounded = (parent, offset) => {
       if (!parent.isStart) {
-        parent.isPath = true;
-        parent.update();
-        pathFounded(parent.parentNode);
+        const pathAnimation = () => { if (launchID == ID) { parent.isPath = true; parent.update() } };
+        //if the animations are on, we set a timeout, otherwise we just execute the function 
+        if (animation) { setTimeout(pathAnimation, UPDATE_DELAY * ((toggleVisited ? offset : 0) + parent.distance)) } else { pathAnimation() }
+        pathFounded(parent.parentNode, offset);
       }
     }
     const testNeighbour = (row, col) => {
@@ -186,57 +224,101 @@
       if (row < ROW_NUMBER && row >= 0 && col < COL_NUMBER && col >= 0) {
         //we retrieve the node
         const neighbourNode = nodeGrid[row][col];
-        let founded = false;
         if (neighbourNode.isWall || neighbourNode.isChecked || neighbourNode.isStart) {
           return false
         }
-        if (row == goalRow && col == goalCol) {
-          founded = true;
+        if (neighbourNode.distance == undefined) {
+          nodeQueue.push(neighbourNode);
+        }
+        if (neighbourNode.weight + parentNode.distance < neighbourNode.distance || neighbourNode.distance == undefined) {
+          neighbourNode.distance = neighbourNode.weight + parentNode.distance;
+          neighbourNode.parentNode = parentNode;
+          if (neighbourNode.euclDistance == undefined) {
+            // neighbourNode.euclDistance = Math.sqrt((row - goalRow) ** 2 + (col - goalCol) ** 2)
+            neighbourNode.euclDistance = Math.abs(col - goalCol) + Math.abs(row - goalRow)
+          }
+        }
+        if (!neighbourNode.isVisited) {
+          //we set visited to true
+          neighbourNode.isVisited = true;
+          // see launch declaration for lauchID explanation
+          //this function update the node
+          const visitedAnimation = () => { if (launchID == ID) { neighbourNode.update() } };
+          //if the animations are on, we set a timeout, otherwise we just execute the function 
+          if (animation && toggleVisited) { setTimeout(visitedAnimation, UPDATE_DELAY * neighbourNode.distance) } else { visitedAnimation() }
         }
 
-        if (neighbourNode.distance == undefined && !founded) {
+      } else { return false }
+    }
+    vectors.some((vector, index) => {
+      testNeighbour(parentNode.row + vector.row, parentNode.col + vector.col);
+    })
+    sortQueue();
+    const nextNode = nodeQueue[0];
+    nodeQueue.shift();
+    nextNode.isChecked = true;
+    // const visitedAnimation = () => { if (launchID == ID) { nextNode.update() } };
+
+    if (nextNode.isFinish) {
+
+      pathFounded(nextNode, nextNode.distance);
+      return true
+    }
+    return Astar(nextNode, goalRow, goalCol, ID, animation, nodeQueue, iteration + 1)
+  }
+
+
+  function dijkstra(parentNode, goalRow, goalCol, ID, animation = false, nodeQueue = [], iteration = 0) {
+    const vectors = [{ row: 1, col: 0 }, { row: -1, col: 0 }, { row: 0, col: 1 }, { row: 0, col: -1 }];
+    if (diagonal) { vectors.push({ row: 1, col: 1 }, { row: -1, col: 1 }, { row: -1, col: -1 }, { row: 1, col: -1 }) }
+    const sortQueue = () => nodeQueue.sort((a, b) => {
+      return a.distance - b.distance// here we sort by the least distant to the origin
+    });
+    const pathFounded = (parent, offset) => {
+      if (!parent.isStart) {
+        const pathAnimation = () => { if (launchID == ID) { parent.isPath = true; parent.update() } };
+        //if the animations are on, we set a timeout, otherwise we just execute the function 
+        if (animation) { setTimeout(pathAnimation, UPDATE_DELAY * ((toggleVisited ? offset : 0) + parent.distance)) } else { pathAnimation() }
+        pathFounded(parent.parentNode, offset);
+      }
+    }
+    const testNeighbour = (row, col) => {
+      //if its off limit,checked, a wall or the start node we dont want it
+      if (row < ROW_NUMBER && row >= 0 && col < COL_NUMBER && col >= 0) {
+        //we retrieve the node
+        const neighbourNode = nodeGrid[row][col];
+        if (neighbourNode.isWall || neighbourNode.isChecked || neighbourNode.isStart) {
+          return false
+        }
+        if (neighbourNode.distance == undefined) {
           nodeQueue.push(neighbourNode);
         }
         if (neighbourNode.weight + parentNode.distance < neighbourNode.distance || neighbourNode.distance == undefined) {
           neighbourNode.distance = neighbourNode.weight + parentNode.distance;
           neighbourNode.parentNode = parentNode;
         }
-        if (founded) {
-          return neighbourNode;
-        }
-        neighbourNode.isVisited = true;
-        neighbourNode.update();
-        // // if its not the goal, not a wall and not visited we want it
-        // //we set visited to true
-        // neighbourNode.isVisited = true;
-        // //see launch declaration for lauchID explanation
-        // //this function update the node
-        // const visitedAnimation = () => { if (launchID == ID) { neighbourNode.update() } };
-        // //if the animations are on, we set a timeout, otherwise we just execute the function 
-        // if (animation && toggleVisited) { setTimeout(visitedAnimation, UPDATE_DELAY * iteration) } else { visitedAnimation() }
-        //if its our goal, we return true
 
+        //we set visited to true
+        neighbourNode.isVisited = true;
+        // see launch declaration for lauchID explanation
+        //this function update the node
+        const visitedAnimation = () => { if (launchID == ID) { neighbourNode.update() } };
+        //if the animations are on, we set a timeout, otherwise we just execute the function 
+        if (animation && toggleVisited) { setTimeout(visitedAnimation, UPDATE_DELAY * neighbourNode.distance) } else { visitedAnimation() }
       } else { return false }
     }
-    if (vectors.some((vector, index) => {
-      let result = testNeighbour(parentNode.row + vector.row, parentNode.col + vector.col);
-      if (result) {
-        nodeQueue.sort((a, b) => a.distance - b.distance);
-        if (result.distance - result.weight <= nodeQueue[0].distance) {
-          console.timeEnd('dijkstra')
-          pathFounded(result.parentNode);
-          return true
-        }
-      }
-    })) {
-      nodeQueue.sort((a, b) => a.distance - b.distance);
-      return true
-    }
-
+    vectors.some((vector, index) => {
+      testNeighbour(parentNode.row + vector.row, parentNode.col + vector.col);
+    })
+    sortQueue();
     const nextNode = nodeQueue[0];
     nodeQueue.shift();
-    nodeQueue.isChecked = true;
-    return dijkstra(nextNode, nodeQueue, goalRow, goalCol, ID, animation, iteration)
+    nextNode.isChecked = true;
+    if (nextNode.isFinish) {
+      pathFounded(nextNode, nextNode.distance);
+      return true;
+    }
+    return dijkstra(nextNode, goalRow, goalCol, ID, animation, nodeQueue, iteration + 1)
   }
 
 
@@ -262,7 +344,7 @@
     let neighboursNodes = [];
     //this function is called when the goal is founded
     const isPath = (path) => {
-      console.timeEnd('myPathFinder')
+
       //here we update the path, we go through each node and update them
       path.forEach((node, index) => {
         //we skip the start node
@@ -346,6 +428,7 @@
   function clearWalls() {
     nodeGrid.forEach(row => row.forEach(node => {
       node.isWall = false;
+      node.weight = 1;
       node.update();
     }))
   }
@@ -358,12 +441,24 @@
       //if we didnt had that, due to the setTimeout we could have artefact from the previous rendering
       //so we give it a random ID, so that if we rerender it stop the previous rendering
       launchID = Math.random();
-      console.time('myPathFinder');
-      clear();
-      pathfinding([{ node: nodeGrid[startNode.row][startNode.col], path: [] }], finishNode.row, finishNode.col, launchID, animation)
-      // clear();
-      // nodeGrid[startNode.row][startNode.col].distance = 0;
-      // dijkstra(nodeGrid[startNode.row][startNode.col], [], finishNode.row, finishNode.col, launchID, animation);
+      if (currentAlgo == 0) {
+        console.time('myPathFinder');
+        clear();
+        pathfinding([{ node: nodeGrid[startNode.row][startNode.col], path: [] }], finishNode.row, finishNode.col, launchID, animation)
+        console.timeEnd('myPathFinder')
+      } else if (currentAlgo == 1) {
+        console.time('dijkstra');
+        clear();
+        nodeGrid[startNode.row][startNode.col].distance = 0;
+        dijkstra(nodeGrid[startNode.row][startNode.col], finishNode.row, finishNode.col, launchID, animation);
+        console.timeEnd('dijkstra');
+      } else if (currentAlgo == 2) {
+        console.time('A*');
+        clear();
+        nodeGrid[startNode.row][startNode.col].distance = 0;
+        Astar(nodeGrid[startNode.row][startNode.col], finishNode.row, finishNode.col, launchID, animation);
+        console.timeEnd('A*');
+      }
     }
   }
 
@@ -384,11 +479,13 @@
       launch(true);
     })
     //allow/prevent the algorithm to go diagonally
-    $("#pathfinding #digonal").click(() => {
+    $("#pathfinding #diagonal").click(function () {
       if (diagonal) {
         diagonal = false;
+        $(this).removeClass('true').addClass('false')
         launch(true);
       } else {
+        $(this).removeClass('false').addClass('true')
         diagonal = true;
         launch(true);
       }
@@ -414,11 +511,22 @@
       }
       launch(true);
     })
-    $('#pathfinding #djikstra').click(e => {
-      console.time('dijkstra');
-      clear();
-      nodeGrid[startNode.row][startNode.col].distance = 0;
-      dijkstra(nodeGrid[startNode.row][startNode.col], [], finishNode.row, finishNode.col);
+    $('#pathfinding #cycle').click(e => {
+      currentAlgo++;
+      if (currentAlgo == ALGO.length) {
+        currentAlgo = 0;
+      }
+      $("#pathfinding #visualize").html('Visualize ' + ALGO[currentAlgo])
+      launch(true);
+    })
+    $('#pathfinding #weight').click(function () {
+      if (weight) {
+        $(this).removeClass('true').addClass('false')
+        weight = false;
+      } else {
+        $(this).removeClass('false').addClass('true')
+        weight = true;
+      }
     })
   })
 })()

@@ -262,6 +262,9 @@
       #pathfinding #grid .node.wall {
         background-color: black;
         border-color: #373737; }
+      #pathfinding #grid .node.weight {
+        background-color: red;
+        border-color: #373737; }
 
 * {
   box-sizing: border-box; }
