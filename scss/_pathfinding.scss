@@ -34,14 +34,14 @@ $end-color: tomato;
   #grid {
     // justify-content: center;
     display: grid;
-    width: 1250px;
+    width: 100%;
     margin: auto;
     .node {
       position: relative;
       cursor: pointer;
       width: 100%;
       padding-bottom: 100%;
-      border: solid thin $primary-cell-color;
+      border: solid 1px $primary-cell-color;
       background-color: $secondary-cell-color;
       div {
         position: absolute;
@@ -87,8 +87,20 @@ $end-color: tomato;
         border-color: $secondary-cell-color;
       }
       &.weight {
-        background-color: red;
-        border-color: $secondary-cell-color;
+        i.iweight {
+          display: block;
+          color: set-text-color($secondary-cell-color);
+        }
+        &.visited {
+          i.iweight {
+            color: set-text-color($primary-cell-color);
+          }
+        }
+        &.path {
+          i.iweight {
+            color: set-text-color($secondary-color);
+          }
+        }
       }
     }
   }

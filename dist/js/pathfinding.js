@@ -16,6 +16,7 @@
     moveEnd = false,
     diagonal = false,
     toggleVisited = false,
+    autoRefresh = true,
     launchID,
     timeOutRef,
     grid = '',
@@ -98,12 +99,12 @@
     //here its when the user hover the node
     mouseOn = e => {
       //if no start node is present we add an hover effect to show him he can put one down
-      if (!startNode.assigned && !this.isWall && !this.isFinish) {
+      if (!startNode.assigned && !this.isWall && !this.isFinish && this.weight == 1) {
         $('#pathfinding .start').removeClass('start');
         this.cell.addClass('start');
       }
       //same but for end node
-      if (!finishNode.assigned && !this.isWall && !this.isStart) {
+      if (!finishNode.assigned && !this.isWall && !this.isStart && this.weight == 1) {
         $('#pathfinding .end').removeClass('end');
         this.cell.addClass('end');
       }
@@ -129,7 +130,7 @@
       }
       //here its when th user drag the end/start node
       //we could do the same timeout as the walls but the animation is way much crappier
-      if (mouseHold && ((moveStart && !this.isFinish) || (moveEnd && !this.isStart)) && !this.isWall) {
+      if (mouseHold && ((moveStart && !this.isFinish) || (moveEnd && !this.isStart)) && !this.isWall && this.weight == 1) {
         if (moveStart) {
           nodeGrid[startNode.row][startNode.col].click();
           this.click();
@@ -194,7 +195,7 @@
     nodeGrid[row] = [];
     for (let col = 0; col < COL_NUMBER; col++) {
       nodeGrid[row][col] = new Node(row, col);
-      grid += '<div id="' + row + '-' + col + '" class="node"><div><i class="far fa-dot-circle iend"></i><i class="far fa-compass istart"></i></div></div>';
+      grid += '<div id="' + row + '-' + col + '" class="node"><div><i class="far fa-dot-circle iend"></i><i class="far fa-compass istart"></i><i class="fas fa-weight-hanging iweight"></i></div></div>';
     }
   }
 
@@ -234,8 +235,8 @@
           neighbourNode.distance = neighbourNode.weight + parentNode.distance;
           neighbourNode.parentNode = parentNode;
           if (neighbourNode.euclDistance == undefined) {
-            // neighbourNode.euclDistance = Math.sqrt((row - goalRow) ** 2 + (col - goalCol) ** 2)
-            neighbourNode.euclDistance = Math.abs(col - goalCol) + Math.abs(row - goalRow)
+            neighbourNode.euclDistance = Math.sqrt((row - goalRow) ** 2 + (col - goalCol) ** 2)
+            // neighbourNode.euclDistance = Math.abs(col - goalCol) + Math.abs(row - goalRow)
           }
         }
         if (!neighbourNode.isVisited) {
@@ -436,7 +437,7 @@
   //function to call when we want to launch the pathfinding algorithms
   function launch(animation = false) {
     //we verify that the start/end nodes are placed
-    if (startNode.assigned != false && finishNode.assigned != false) {
+    if (startNode.assigned != false && finishNode.assigned != false && (animation || animation != autoRefresh)) {
       //the lauchId is just here to prevent rendering artefact if we render at the middle of one,
       //if we didnt had that, due to the setTimeout we could have artefact from the previous rendering
       //so we give it a random ID, so that if we rerender it stop the previous rendering
@@ -526,6 +527,16 @@
       } else {
         $(this).removeClass('false').addClass('true')
         weight = true;
+      }
+    })
+    $('#pathfinding #refresh').click(function () {
+      if (autoRefresh) {
+        $(this).removeClass('true').addClass('false')
+        autoRefresh = false;
+      } else {
+        $(this).removeClass('false').addClass('true')
+        autoRefresh = true;
+        launch();
       }
     })
   })
