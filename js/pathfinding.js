@@ -514,7 +514,7 @@ $(() => {
       $(this).removeClass('false').addClass('true')
       toggleVisited = true;
     }
-    launch(true);
+    launch();
   })
   $('#pathfinding #cycle').click(e => {
     currentAlgo++;
