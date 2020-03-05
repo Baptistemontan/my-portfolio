@@ -235,8 +235,8 @@
           neighbourNode.distance = neighbourNode.weight + parentNode.distance;
           neighbourNode.parentNode = parentNode;
           if (neighbourNode.euclDistance == undefined) {
-            neighbourNode.euclDistance = Math.sqrt((row - goalRow) ** 2 + (col - goalCol) ** 2)
-            // neighbourNode.euclDistance = Math.abs(col - goalCol) + Math.abs(row - goalRow)
+            // neighbourNode.euclDistance = Math.sqrt((row - goalRow) ** 2 + (col - goalCol) ** 2)
+            neighbourNode.euclDistance = Math.abs(col - goalCol) + Math.abs(row - goalRow)
           }
         }
         if (!neighbourNode.isVisited) {
