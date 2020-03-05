@@ -219,14 +219,14 @@
         color: #000; }
   #pathfinding #grid {
     display: grid;
-    width: 1250px;
+    width: 100%;
     margin: auto; }
     #pathfinding #grid .node {
       position: relative;
       cursor: pointer;
       width: 100%;
       padding-bottom: 100%;
-      border: solid thin #c4c4c4;
+      border: solid 1px #c4c4c4;
       background-color: #373737; }
       #pathfinding #grid .node div {
         position: absolute;
@@ -262,6 +262,13 @@
       #pathfinding #grid .node.wall {
         background-color: black;
         border-color: #373737; }
+      #pathfinding #grid .node.weight i.iweight {
+        display: block;
+        color: #fff; }
+      #pathfinding #grid .node.weight.visited i.iweight {
+        color: #000; }
+      #pathfinding #grid .node.weight.path i.iweight {
+        color: #000; }
 
 * {
   box-sizing: border-box; }
