@@ -1,11 +1,11 @@
 //everything is inside an anonymous function who is directly call after its declaration so that its global variables are contained in itself
-
+//(function () {
 //global variables and constant declaration
 const ROW_NUMBER = 25;
 const COL_NUMBER = 60;
 const UPDATE_DELAY = 30;
 const WEIGHT = 15;
-const ALGO = ['myAlgo', 'Dijkstra', 'A*'];
+const ALGO = ['Dijkstra', 'A*'];
 let mouseHold = false,
   addWall = false,
   removeWall = false,
@@ -201,19 +201,27 @@ for (let row = 0; row < ROW_NUMBER; row++) {
 }
 
 function dijkstra(parentNode, goalRow, goalCol, astar, ID, animation = false, nodeQueue = [], iteration = 0) {
+  //here are the vectors for the neighbours node check
   const vectors = [{ row: 1, col: 0 }, { row: -1, col: 0 }, { row: 0, col: 1 }, { row: 0, col: -1 }];
+  //if diagonals are toggle we push the corresponding vectors
   if (diagonal) { vectors.push({ row: 1, col: 1 }, { row: -1, col: 1 }, { row: -1, col: -1 }, { row: 1, col: -1 }) }
+  //we call this function to sort the node queue
   const sortQueue = () => nodeQueue.sort((a, b) => {
     if (astar) {
       //if we use A* we sort by the distance to the origins + the heurisric distance
-      return (a.distance + a.heuristic) - (b.distance + b.heuristic);
+      const comparaison = (a.distance + a.heuristic) - (b.distance + b.heuristic)
+      //if the comparaison decide which of the 2 elements is the better we return it
+      if (comparaison != 0) { return comparaison }
+      //otherwise compare the heuristic value of the 2 elements
+      return a.heuristic - b.heuristic;
     } else {
-      return a.distance - b.distance;
       // here we sort by the distance to the origin
-      //the closer you are the smallest your index in the array is
+      return a.distance - b.distance;
     }
   });
+  //here is the function to call to update visually the path
   const pathFounded = (parent, offset) => {
+    //we skip the start node
     if (!parent.isStart) {
       const pathAnimation = () => { if (launchID == ID) { parent.isPath = true; parent.update() } };
       //if the animations are on, we set a timeout, otherwise we just execute the function 
@@ -295,106 +303,6 @@ function dijkstra(parentNode, goalRow, goalCol, astar, ID, animation = false, no
   return dijkstra(nextNode, goalRow, goalCol, astar, ID, animation, nodeQueue, iteration + 1)
 }
 
-
-/*
-this is the main function, here the idea of how it work
-i will try my best to explain it
-i often refers some nodes as neighbours, most of the time is the most distant visited nodes of the origin
-we start at a node, and we look at all its neighbours if its the goal node.
-if its the goal, then its over
-otherwise we add the node to an array of neighbours
-this will give an array of node that are exactly at a distance of exactly 1 of the origin
-then we call the function again but on the array of neighbours
-so each node in the array will look at its neighbours
-and will add it to a general array for all the neigbours
-that will give an array of all the node that are at a distance of exactly 2 of the origin
-ten we call the function again on the neighbours of the neighbours of the origin
-and this goes on
-*/
-function pathfinding(previousNodes, goalRow, goalCol, ID, animation = false, iteration = 0) {
-  //if there is no nodes to check, no need to run the function
-  if (previousNodes.length < 1) { return false }
-  //here is the array where nodes add there neigbours
-  let neighboursNodes = [];
-  //this function is called when the goal is founded
-  const isPath = (path) => {
-
-    //here we update the path, we go through each node and update them
-    path.forEach((node, index) => {
-      //we skip the start node
-      if (!node.node.isStart) {
-        //this function is call for the rendering
-        const pathAnimation = () => {
-          //see the launch function description for the launchID, it prevent artefact from rerendering
-          if (launchID == ID) {
-            node.node.isPath = true;
-            node.node.update();
-          }
-        }
-        //if animations are on, we set a timeout, otherwise we just execute the function
-        if (animation) { setTimeout(pathAnimation, UPDATE_DELAY * ((toggleVisited ? iteration : 0) + index)) } else { pathAnimation() }
-      }
-    })
-    //and we return true to end the recursion
-    return true;
-  }
-  //thats the function that retrieve the neigbours of the current node
-  const testNeighbours = (row, col, path) => {
-    //if its off limit, we dont try
-    if (row < ROW_NUMBER && row >= 0 && col < COL_NUMBER && col >= 0) {
-      //if its our goal, we return true
-      if (row == goalRow && col == goalCol) {
-        return true
-      }
-      //we retrieve the node
-      const neighboursNode = nodeGrid[row][col];
-      //if its visited, a wall or the start node we dont want it
-      if (neighboursNode.isVisited || neighboursNode.isWall || neighboursNode.isStart) {
-        return false
-      }
-      // if its not the goal, not a wall and not visited we want it
-      //we set visited to true
-      neighboursNode.isVisited = true;
-      //see launch declaration for lauchID explanation
-      //this function update the node
-      const visitedAnimation = () => { if (launchID == ID) { neighboursNode.update() } };
-      //if the animations are on, we set a timeout, otherwise we just execute the function 
-      if (animation && toggleVisited) { setTimeout(visitedAnimation, UPDATE_DELAY * iteration) } else { visitedAnimation() }
-
-      //then we push it to the general array of neighbours
-      neighboursNodes.push({
-        node: neighboursNode,
-        // here we keep track of the path it took to get to this node
-        path: path
-      });
-    } else { return false }
-  }
-  //here is the array of vectors
-  const vectors = [{ row: 1, col: 0 }, { row: -1, col: 0 }, { row: 0, col: 1 }, { row: 0, col: -1 }]
-  //if diagonal is  on, we add the diagonal vectors
-  if (diagonal) { vectors.push({ row: 1, col: 1 }, { row: -1, col: 1 }, { row: -1, col: -1 }, { row: 1, col: -1 }) }
-  //here its a forEach loop but its stop when the iteration return true 
-  //and if a iteration return true, the forEach return true
-  if (previousNodes.some(node => {
-    //we get the row and col
-    const nodeRow = node.node.row;
-    const nodeCol = node.node.col;
-    //here we just want to make a clone of the array,
-    //we dont want to modify the path of previous nodes
-    let path = node.path.slice();
-    //and we push the current node to the path
-    path.push(node);
-    //then we test all the neigbours node (based on the vectors)
-    //and if testNeighbours return true, we call the isPath function
-    //which always return true, so the forEach stops and return true
-    return vectors.some(vector => {
-      if (testNeighbours(nodeRow + vector.row, nodeCol + vector.col, path)) { return isPath(path) }
-    })
-  })) { return true }// and it make the function return true, and the recursion stops
-  return pathfinding(neighboursNodes, goalRow, goalCol, ID, animation, iteration + 1);
-  //if the goal is not founded, we start again with the neighbours
-}
-
 //those two functions does exactly what their name say
 function clear() {
   nodeGrid.forEach(row => row.forEach(node => node.reset()));
@@ -412,23 +320,18 @@ function clearWalls() {
 //function to call when we want to launch the pathfinding algorithms
 function launch(animation = false) {
   //we verify that the start/end nodes are placed
-  if (startNode.assigned != false && finishNode.assigned != false && (animation || animation != autoRefresh)) {
+  if (startNode.assigned && finishNode.assigned && (animation || animation != autoRefresh)) {
     //the lauchId is just here to prevent rendering artefact if we render at the middle of one,
     //if we didnt had that, due to the setTimeout we could have artefact from the previous rendering
     //so we give it a random ID, so that if we rerender it stop the previous rendering
     launchID = Math.random();
     if (currentAlgo == 0) {
-      console.time('myPathFinder');
-      clear();
-      pathfinding([{ node: nodeGrid[startNode.row][startNode.col], path: [] }], finishNode.row, finishNode.col, launchID, animation)
-      console.timeEnd('myPathFinder')
-    } else if (currentAlgo == 1) {
       console.time('dijkstra');
       clear();
       nodeGrid[startNode.row][startNode.col].distance = 0;
       dijkstra(nodeGrid[startNode.row][startNode.col], finishNode.row, finishNode.col, false, launchID, animation);
       console.timeEnd('dijkstra');
-    } else if (currentAlgo == 2) {
+    } else if (currentAlgo == 1) {
       console.time('A*');
       clear();
       nodeGrid[startNode.row][startNode.col].distance = 0;
@@ -444,12 +347,6 @@ function timeComparaison(numberOfRepetition = 100) {
   visualUpdate = false
   let i;
   launchID = 0
-  console.time('myPath')
-  for (i = 0; i < numberOfRepetition; i++) {
-    clear();
-    pathfinding([{ node: nodeGrid[startNode.row][startNode.col], path: [] }], finishNode.row, finishNode.col, launchID, false)
-  }
-  console.timeEnd('myPath')
   console.time('Dijkstra');
   for (i = 0; i < numberOfRepetition; i++) {
     clear();
@@ -544,3 +441,4 @@ $(() => {
     }
   })
 })
+//}
