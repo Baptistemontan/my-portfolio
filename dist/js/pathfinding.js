@@ -347,12 +347,6 @@ function timeComparaison(numberOfRepetition = 100) {
   visualUpdate = false
   let i;
   launchID = 0
-  console.time('myPath')
-  for (i = 0; i < numberOfRepetition; i++) {
-    clear();
-    pathfinding([{ node: nodeGrid[startNode.row][startNode.col], path: [] }], finishNode.row, finishNode.col, launchID, false)
-  }
-  console.timeEnd('myPath')
   console.time('Dijkstra');
   for (i = 0; i < numberOfRepetition; i++) {
     clear();
