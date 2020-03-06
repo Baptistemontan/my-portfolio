@@ -19,13 +19,14 @@ $secondary-cell-color: darken($primary-color, 5);
       background: $home-image;
       background-attachment: fixed;
       background-size: cover;
-      &::after {
+      overflow: hidden;
+      &:after {
         content: "";
         position: absolute;
         top: 0;
         right: 0;
         width: 100%;
-        height: 100%;
+        height: 200%;
         z-index: -1;
         background: rgba($primary-color, $background-opacity);
       }
