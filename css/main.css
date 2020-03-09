@@ -262,6 +262,8 @@
       #pathfinding #grid .node.wall {
         background-color: black;
         border-color: #373737; }
+      #pathfinding #grid .node.checked {
+        background-color: red; }
       #pathfinding #grid .node.weight i.iweight {
         display: block;
         color: #fff; }
