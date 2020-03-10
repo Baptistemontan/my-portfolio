@@ -94,8 +94,6 @@ class Node {
     moveEnd = false;
     removeWeight = false;
     addWeight = false;
-    clearTimeout(timeOutRef);
-    timeOutRef = setTimeout(launch, 50);
   }
   //here its when the user hover the node
   mouseOn = e => {
