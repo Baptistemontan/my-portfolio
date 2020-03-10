@@ -86,6 +86,9 @@ $end-color: tomato;
         background-color: black;
         border-color: $secondary-cell-color;
       }
+      &.checked {
+        background-color: red;
+      }
       &.weight {
         i.iweight {
           display: block;

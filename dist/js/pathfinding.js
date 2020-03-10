@@ -94,8 +94,6 @@ class Node {
     moveEnd = false;
     removeWeight = false;
     addWeight = false;
-    clearTimeout(timeOutRef);
-    timeOutRef = setTimeout(launch, 50);
   }
   //here its when the user hover the node
   mouseOn = e => {
@@ -210,6 +208,7 @@ function dijkstra(parentNode, goalRow, goalCol, astar, ID, animation = false, no
     if (astar) {
       //if we use A* we sort by the distance to the origins + the heurisric distance
       const comparaison = (a.distance + a.heuristic) - (b.distance + b.heuristic)
+      // return comparaison;
       //if the comparaison decide which of the 2 elements is the better we return it
       if (comparaison != 0) { return comparaison }
       //otherwise compare the heuristic value of the 2 elements
@@ -273,9 +272,8 @@ function dijkstra(parentNode, goalRow, goalCol, astar, ID, animation = false, no
         //this function update the node
         const visitedAnimation = () => { if (launchID == ID) { neighbourNode.update() } };
         //see launch declaration for launchID explanation
-        //if the animations are on, we set a timeout, otherwise we just execute the function 
-
-        if (animation && toggleVisited) { setTimeout(visitedAnimation, UPDATE_DELAY * neighbourNode.distance) } else { visitedAnimation() }
+        //if the animations are on, we set a timeout, otherwise we just execute the function
+        if (animation && toggleVisited) { setTimeout(visitedAnimation, UPDATE_DELAY * iteration) } else { visitedAnimation() }
       }
     }
   }
@@ -287,6 +285,8 @@ function dijkstra(parentNode, goalRow, goalCol, astar, ID, animation = false, no
   sortQueue();
   //and get the next 'parent' node
   const nextNode = nodeQueue[0];
+  //if nextNode is undefined, that mean that evry possible path as been explore but the end has never been reached, os ther is no path to the end node
+  if (nextNode === undefined) { return false }
   //we remove it from the queue
   nodeQueue.shift();
   //and mark it as checked so we will never look at it again
@@ -295,7 +295,7 @@ function dijkstra(parentNode, goalRow, goalCol, astar, ID, animation = false, no
   if (nextNode.isFinish) {
     //we pass the distance because we need it to offset the timeout for the animation
     //but this function is purely visual, so if visualupdate is desactivate we skip it
-    if (visualUpdate) { pathFounded(nextNode, nextNode.distance) }
+    if (visualUpdate) { pathFounded(nextNode, iteration) }
     return true;//technicly we dont need to return true but meh
     //by returning a value the recursion end
   }
@@ -366,7 +366,15 @@ function timeComparaison(numberOfRepetition = 100) {
 
 $(() => {
   //initialisation of the script when the DOM is ready
-  $('#pathfinding #grid').html(grid).css('grid-template-columns', 'repeat(' + COL_NUMBER + ', 1fr)')
+  $('#pathfinding #grid').html(grid).css('grid-template-columns', 'repeat(' + COL_NUMBER + ', 1fr)').mouseleave(() => {
+    mouseHold = false;
+    moveStart = false;
+    addWall = false;
+    removeWall = false;
+    moveEnd = false;
+    removeWeight = false;
+    addWeight = false;
+  })
   //initialisation of every node
   nodeGrid.forEach(row => row.forEach(e => e.init()))
   //setting up start and end node
