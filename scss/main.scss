@@ -121,9 +121,17 @@ main {
     grid-area: job3;
   }
   .job {
+    position: relative;
     background: lighten($primary-color, 5);
     padding: 0.5rem;
     border-bottom: $secondary-color 5px solid;
+    min-height: 150px;
+    .center {
+      width: 100%;
+      text-align: center;
+      position: absolute;
+      top: 30%;
+    }
   }
 }
 
