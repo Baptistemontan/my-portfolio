@@ -3,6 +3,7 @@ const menuBtn = document.querySelector(".menu-btn"),
     menu = document.querySelector(".menu"),
     menuNav = document.querySelector(".menu-nav"),
     menuBranding = document.querySelector(".menu-branding"),
+    menuBrandingBackground = document.querySelector(".menu-branding-background"),
     navItems = document.querySelectorAll(".nav-item");
 
 // Set Inital State of Menu
@@ -16,6 +17,7 @@ function toggleMenu() {
         menu.classList.add('show');
         menuNav.classList.add('show');
         menuBranding.classList.add('show');
+        menuBrandingBackground.classList.add('show');
         navItems.forEach(item => item.classList.add('show'));
         showMenu = true;
     } else {
@@ -23,6 +25,7 @@ function toggleMenu() {
         menu.classList.remove('show');
         menuNav.classList.remove('show');
         menuBranding.classList.remove('show');
+        menuBrandingBackground.classList.remove('show');
         navItems.forEach(item => item.classList.remove('show'));
         showMenu = false;
     }

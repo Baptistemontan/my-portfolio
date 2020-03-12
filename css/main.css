@@ -24,11 +24,11 @@
   position: fixed;
   top: 0;
   width: 100%;
-  opacity: 0.9;
   visibility: hidden; }
   .menu.show {
     visibility: visible; }
-  .menu-branding, .menu-nav {
+  .menu-branding-background, .menu-nav {
+    opacity: 0.9;
     display: flex;
     flex-flow: column wrap;
     align-items: center;
@@ -37,6 +37,15 @@
     width: 50%;
     height: 100vh;
     overflow: hidden; }
+  .menu-branding {
+    display: flex;
+    flex-flow: column wrap;
+    position: absolute;
+    z-index: 2;
+    width: 50%;
+    height: 100vh;
+    align-items: center;
+    justify-content: center; }
   .menu-nav {
     margin: 0;
     padding: 0;
@@ -46,11 +55,12 @@
     transition: all 0.5s ease-out; }
     .menu-nav.show {
       transform: translate3d(0, 0, 0); }
-  .menu-branding {
-    background: #444;
+  .menu-branding-background {
+    background: #444; }
+  .menu-branding, .menu-branding-background {
     transform: translate3d(0, 100%, 0);
     transition: all 0.5s ease-out; }
-    .menu-branding.show {
+    .menu-branding.show, .menu-branding-background.show {
       transform: translate3d(0, 0, 0); }
   .menu .nav-item {
     transform: translate3d(600px, 0, 0);
@@ -325,7 +335,9 @@ h3 {
 .portrait {
   width: 250px;
   height: 250px;
-  background: url();
+  background-image: url(../images/portrait.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
   border-radius: 50%;
   border: solid 3px #eece1a; }
 
@@ -471,7 +483,8 @@ main {
       margin-bottom: 1rem;
       font-size: 3.8rem; }
   ul.menu-nav,
-  div.menu-branding {
+  div.menu-branding-background,
+  .menu-branding {
     float: none;
     width: 100%;
     min-height: 0; }
@@ -479,11 +492,12 @@ main {
     height: 75vh;
     transform: translate3d(100%, 0, 0);
     font-size: 24px; }
+  .menu-branding-background,
   .menu-branding {
     height: 25vh;
     transform: translate3d(-100%, 0, 0); }
+    .menu-branding-background .portrait,
     .menu-branding .portrait {
-      background: url();
       width: 150px;
       height: 150px; }
   .about-info {
