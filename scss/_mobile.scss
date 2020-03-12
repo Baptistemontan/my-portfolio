@@ -22,7 +22,8 @@
     }
   }
   ul.menu-nav,
-  div.menu-branding {
+  div.menu-branding-background,
+  .menu-branding {
     float: none;
     width: 100%;
     min-height: 0;
@@ -33,12 +34,13 @@
     transform: translate3d(100%, 0, 0);
     font-size: 24px;
   }
+  .menu-branding-background,
   .menu-branding {
     height: 25vh;
     //sliding from the left
     transform: translate3d(-100%, 0, 0);
     .portrait {
-      background: $portrait-image-small;
+      // background: $portrait-image-small;
       width: 150px;
       height: 150px;
     }

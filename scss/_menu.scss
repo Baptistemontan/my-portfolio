@@ -39,13 +39,13 @@
   position: fixed;
   top: 0;
   width: 100%;
-  opacity: $menu-opacity;
   visibility: hidden;
   &.show {
     visibility: visible;
   }
-  &-branding,
+  &-branding-background,
   &-nav {
+    opacity: $menu-opacity;
     display: flex;
     flex-flow: column wrap;
     align-items: center;
@@ -54,6 +54,16 @@
     width: 50%;
     height: 100vh;
     overflow: hidden;
+  }
+  &-branding {
+    display: flex;
+    flex-flow: column wrap;
+    position: absolute;
+    z-index: 2;
+    width: 50%;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
   }
   &-nav {
     margin: 0;
@@ -67,8 +77,11 @@
       transform: translate3d(0, 0, 0);
     }
   }
-  &-branding {
+  &-branding-background {
     background: $primary-color;
+  }
+  &-branding,
+  &-branding-background {
     transform: translate3d(0, 100%, 0);
     @include easeOut;
     &.show {

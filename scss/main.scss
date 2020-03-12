@@ -43,7 +43,9 @@ h3 {
 .portrait {
   width: 250px;
   height: 250px;
-  background: $portrait-image;
+  background-image: $portrait-image;
+  background-size: cover;
+  background-repeat: no-repeat;
   border-radius: 50%;
   border: solid 3px $secondary-color;
 }
